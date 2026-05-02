@@ -8,31 +8,34 @@ import { PORT } from "@/config/constants";
 
 const app = new Hono();
 
-// Global Middleware
+// Global middleware
 app.use("*", logger());
 app.use("*", corsMiddleware);
 
-// Health Check
+app.get("/", (c) =>
+  c.json({
+    name: "Quran App Backend",
+    status: "ok",
+    endpoints: ["/health", "/surah", "/surah/:id", "/search?q=...", "/audio/:surahNo/:ayahNo"],
+  })
+);
+
 app.get("/health", (c) =>
   c.json({ status: "ok", timestamp: new Date().toISOString() })
 );
 
-// Routes
-registerRoutes(app); 
+registerRoutes(app);
 
-// Error Handling
 app.notFound(notFound);
 app.onError(onError);
 
-// Warm up search index in background on startup
 getSearchIndex().catch((err) =>
   console.error("[Startup] Search index warm-up failed:", err)
 );
 
-// Start
+console.log(`Backend running at http://localhost:${PORT}`);
+
 export default {
   port: PORT,
   fetch: app.fetch,
 };
-
-console.log(`Backend running at http://localhost:${PORT}`);

@@ -1,4 +1,4 @@
-// Reciter
+// Audio / Reciters
 
 export interface AudioSource {
   reciter: string;
@@ -20,7 +20,7 @@ export interface SurahMeta {
   totalAyah: number;
 }
 
-// Full Surah Response (/api/{surahNo}.json)
+// Full Surah Response from /api/{surahNo}.json
 
 export interface VerseAudioEntry {
   reciter: string;
@@ -28,29 +28,28 @@ export interface VerseAudioEntry {
 }
 
 export interface SurahFull extends SurahMeta {
-  audio: ReciterMap;                          // full-surah audio per reciter
-  verseAudio: Record<string, VerseAudioEntry>; // per-ayah audio per reciter
+  audio: ReciterMap;
+  verseAudio?: Record<string, VerseAudioEntry>;
   english: string[];
   arabic1: string[];
   arabic2: string[];
   bengali?: string[];
+  urdu?: string[];
 }
 
-// Single Ayah (/api/{surahNo}/{ayahNo}.json)
+// Single Ayah Response from /api/{surahNo}/{ayahNo}.json
 
 export interface AyahFull extends SurahMeta {
-  surahNo: number;
   ayahNo: number;
   audio: ReciterMap;
   english: string;
   arabic1: string;
   arabic2: string;
   bengali?: string;
+  urdu?: string;
 }
 
-
-// Frontend Responses 
-// Ayah Response
+// Backend responses for frontend
 
 export interface Ayah {
   ayahNo: number;
@@ -58,10 +57,11 @@ export interface Ayah {
   arabic2: string;
   english: string;
   bengali?: string;
-  audio: Record<string, { reciter: string; url: string; originalUrl: string }>;
+  urdu?: string;
+  // Kept optional so SSG pages do not have to embed thousands of audio URLs.
+  // The frontend can call GET /audio/:surahNo/:ayahNo when the user presses play.
+  audio?: ReciterMap;
 }
-
-// Surah Response
 
 export interface SurahResponse {
   meta: SurahMeta;
