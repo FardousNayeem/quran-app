@@ -1,11 +1,3 @@
-# dependencies (bun install)
-node_modules
-
-# output
-out
-dist
-*.tgz
-
 # code coverage
 coverage
 *.lcov
@@ -27,8 +19,33 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .cache
 *.tsbuildinfo
 
-# IntelliJ based IDEs
-.idea
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
 
-# Finder (MacOS) folder config
+# Bun
+bun.lockb
+*.bun
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+.next/
+out/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
