@@ -1,0 +1,14 @@
+{
+  "name": "quran-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:backend": "cd backend && bun run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "npm run dev:backend & npm run dev:frontend"
+  }
+}
