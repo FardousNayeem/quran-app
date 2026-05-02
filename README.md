@@ -17,8 +17,8 @@ Quran-Web is a responsive Quran web application. It provides a clean reading exp
 
 ## Tech Stack
 - **Language:** TypeScript
+- **Backend/API:** Hono-Bun
 - **Frontend:** Next.js
 - **Styling:** Tailwind CSS
-- **Backend/API:** Hono-Bun
 - **Data Source:** quranapi (https://quranapi.pages.dev/api)
 - **Audio Source:** quranapi (https://quranapi.pages.dev/api/audio/)
