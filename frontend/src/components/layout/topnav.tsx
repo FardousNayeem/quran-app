@@ -1,94 +1,127 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { SearchModal } from "@/components/search/searchmodal";
 
 export function TopNav() {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   return (
-    <nav
-      className="fixed top-0 right-0 z-30 flex items-center justify-between px-6 border-b"
-      style={{
-        left: "var(--side-nav-size)",
-        height: "var(--top-nav-size)",
-        backgroundColor: "var(--primary-bg)",
-        borderColor: "var(--border-color)",
-      }}
-    >
-      {/* Left: brand */}
-      <Link href="/" className="flex flex-col">
-        <p
-          className="font-bold text-lg leading-none"
-          style={{ color: "var(--pure-color)" }}
-        >
-          Quran Mazid
-        </p>
-        <p
-          className="text-[10px] tracking-tight mt-0.5"
-          style={{ color: "var(--subtitle-color)" }}
-        >
-          Read, Study, and Learn The Quran
-        </p>
-      </Link>
-
-      {/* Right: search + theme + support */}
-      <div className="flex items-center gap-4">
-        {/* Search button */}
-        <button
-          className="flex size-[34px] min-w-[34px] items-center justify-center rounded-full transition-colors active:scale-90"
-          style={{
-            backgroundColor: "var(--primary-7)",
-            color: "var(--primary)",
-          }}
-          aria-label="Search"
-        >
-          <svg width="18" height="18" viewBox="0 0 21 21" fill="none">
-            <path
-              d="M18.38 18.37L14.75 14.75M16.71 10.04C16.71 13.72 13.73 16.71 10.05 16.71C6.36 16.71 3.38 13.72 3.38 10.04C3.38 6.36 6.36 3.37 10.05 3.37C13.73 3.37 16.71 6.36 16.71 10.04Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-
-        {/* Theme toggle */}
-        <button
-          className="flex size-[34px] min-w-[34px] items-center justify-center rounded-full transition-colors active:scale-90"
-          style={{
-            backgroundColor: "var(--primary-7)",
-            color: "var(--primary)",
-          }}
-          aria-label="Toggle theme"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="m14.71 7.6-2.29-2.29 2.29-2.29L17 5.31zm5 3-1.29-1.29 1.29-1.29L21 9.31zM12.07 21q-1.89 0-3.54-.71T5.64 18.34t-1.95-2.89t-.71-3.54q0-2.92 1.68-5.27t4.44-3.27q-.1 2.34.72 4.5q.82 2.16 2.48 3.82q1.66 1.66 3.82 2.48t4.5.72q-.92 2.75-3.27 4.44T12.07 21" />
-          </svg>
-        </button>
-
-        {/* Support Us */}
-        <Link
-          href="https://irdfoundation.com/sadaqa-jaria"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex h-[38px] min-w-[136px] items-center justify-center gap-2 rounded-full px-4 text-base font-medium transition-colors"
-          style={{
-            backgroundColor: "var(--primary)",
-            color: "var(--primary-fg)",
-          }}
-        >
-          <span>Support Us</span>
-
-          <svg width="19" height="18" viewBox="0 0 19 18" fill="none">
-            <path
-              opacity="0.4"
-              d="M15.22 6.07C15.22 6.18 15.22 6.29 15.21 6.4C14.06 5.97 12.71 6.23 11.81 7.04C11.2 6.5 10.42 6.19 9.58 6.19C7.73 6.19 6.23 7.7 6.23 9.56C6.23 11.68 7.3 13.23 8.32 14.24C8.23 14.23 8.17 14.21 8.11 14.19C6.16 13.52 1.82 10.76 1.82 6.07C1.82 4 3.49 2.33 5.54 2.33C6.76 2.33 7.84 2.91 8.52 3.82C9.2 2.91 10.28 2.33 11.5 2.33C13.55 2.33 15.22 4 15.22 6.07Z"
-              fill="currentColor"
-            />
-            <path
-              d="M13.82 7.19C13.02 7.19 12.29 7.58 11.84 8.18C11.39 7.58 10.67 7.19 9.86 7.19C8.5 7.19 7.39 8.3 7.39 9.68C7.39 10.22 7.47 10.7 7.62 11.15C8.32 13.38 10.49 14.71 11.56 15.08C11.71 15.13 11.96 15.13 12.12 15.08C13.19 14.71 15.36 13.38 16.06 11.15C16.21 10.7 16.3 10.21 16.3 9.68C16.3 8.3 15.19 7.19 13.82 7.19Z"
-              fill="currentColor"
-            />
-          </svg>
+    <>
+      <nav
+        className="fixed top-0 right-0 z-[2] flex items-center justify-between border-b border-[var(--border-color)] bg-[var(--primary-bg)] px-6"
+        style={{
+          left: "var(--side-nav-size)",
+          height: "var(--top-nav-size)",
+        }}
+      >
+        <Link href="/" className="flex select-none flex-col">
+          <p className="mt-[2px] font-latin text-xl font-bold leading-none text-[var(--pure-color)]">
+            Quran Mazid
+          </p>
+          <p className="mt-[2px] w-max text-[10px] tracking-tight text-[var(--subtitle-color)] [word-spacing:2px]">
+            Read, Study, and Learn The Quran
+          </p>
         </Link>
-      </div>
-    </nav>
+
+        <div className="flex items-center gap-4 md:gap-6">
+          <button
+            type="button"
+            aria-label="Search Quran"
+            aria-haspopup="dialog"
+            aria-expanded={searchOpen}
+            onClick={() => setSearchOpen(true)}
+            className="group flex size-[34px] min-w-[34px] cursor-pointer items-center justify-center rounded-full bg-[var(--primary-7)] text-[var(--primary)] transition-transform active:scale-90 [&>svg]:size-[18px]"
+          >
+            <SearchIcon />
+          </button>
+
+          <button
+            type="button"
+            aria-label="Dark theme"
+            className="group flex size-[34px] min-w-[34px] cursor-pointer items-center justify-center rounded-full bg-[var(--primary-7)] text-[var(--primary)] outline-none transition-transform active:scale-90 [&>svg]:size-[18px]"
+          >
+            <ThemeIcon />
+          </button>
+
+          <Link
+            href="https://irdfoundation.com/sadaqa-jaria"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden h-[38px] min-w-[136px] select-none items-center justify-center gap-2 rounded-full bg-[var(--primary)] px-2 text-[var(--primary-fg)] md:flex"
+          >
+            <span className="text-base font-medium text-[var(--primary-fg)]">
+              Support Us
+            </span>
+
+            <HeartIcon />
+          </Link>
+        </div>
+      </nav>
+
+      <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
+    </>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M18.3789 18.3721L14.7539 14.7471M16.7122 10.0387C16.7122 13.7206 13.7275 16.7054 10.0456 16.7054C6.36367 16.7054 3.37891 13.7206 3.37891 10.0387C3.37891 6.35684 6.36367 3.37207 10.0456 3.37207C13.7275 3.37207 16.7122 6.35684 16.7122 10.0387Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ThemeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="m14.712 7.596l-2.289-2.288l2.289-2.289L17 5.308zm5 3l-1.289-1.288l1.289-1.289L21 9.308zM12.075 21q-1.888 0-3.543-.713T5.64 18.336t-1.951-2.893t-.714-3.543q0-2.92 1.68-5.265t4.436-3.27q-.104 2.34.717 4.501q.82 2.161 2.48 3.82q1.66 1.66 3.82 2.481t4.502.717q-.92 2.754-3.268 4.435T12.075 21"
+      />
+    </svg>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="19"
+      height="18"
+      viewBox="0 0 19 18"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        opacity="0.4"
+        d="M15.2153 6.0675C15.2153 6.18 15.2153 6.29251 15.2078 6.39751C14.0603 5.97001 12.7103 6.23251 11.8103 7.04251C11.2028 6.49501 10.4153 6.18751 9.57531 6.18751C7.73031 6.18751 6.23032 7.69501 6.23032 9.55501C6.23032 11.6775 7.29532 13.23 8.31532 14.235C8.23282 14.2275 8.16532 14.2125 8.10532 14.19C6.16282 13.5225 1.82031 10.7625 1.82031 6.0675C1.82031 3.9975 3.48531 2.32501 5.54031 2.32501C6.76281 2.32501 7.84281 2.91 8.51781 3.8175C9.20031 2.91 10.2803 2.32501 11.4953 2.32501C13.5503 2.32501 15.2153 3.9975 15.2153 6.0675Z"
+        fill="currentColor"
+      />
+      <path
+        d="M13.8217 7.1925C13.0192 7.1925 12.2917 7.58251 11.8417 8.18251C11.3917 7.58251 10.6717 7.1925 9.86171 7.1925C8.49671 7.1925 7.38672 8.30251 7.38672 9.68251C7.38672 10.215 7.46922 10.7025 7.61922 11.1525C8.32422 13.38 10.4917 14.7075 11.5642 15.075C11.7142 15.1275 11.9617 15.1275 12.1192 15.075C13.1917 14.7075 15.3592 13.38 16.0642 11.1525C16.2142 10.695 16.2967 10.2075 16.2967 9.68251C16.2967 8.30251 15.1867 7.1925 13.8217 7.1925Z"
+        fill="currentColor"
+      />
+    </svg>
   );
 }

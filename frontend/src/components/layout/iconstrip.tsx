@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { SVGProps } from "react";
+import type { ReactNode, SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -12,7 +12,56 @@ interface IconStripProps {
 }
 
 const iconButtonClassName =
-  "flex size-9 items-center justify-center rounded-sm border-2 border-transparent text-[var(--icon-color)] transition-all duration-300 hover:text-[var(--pure-color)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--primary)]/70 [&>svg]:size-[22px] [&>svg]:text-current";
+  "group relative flex size-9 items-center justify-center rounded-sm border-2 border-transparent !text-[var(--icon-color)] transition-all duration-300 hover:!text-[var(--pure-color)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--primary)]/70 [&>svg]:size-[22px] [&>svg]:text-current";
+
+function Tooltip({ label }: { label: string }) {
+  return (
+    <span className="pointer-events-none absolute left-full top-1/2 z-[999] ml-3 hidden -translate-y-1/2 whitespace-nowrap rounded-md bg-gray-200 px-3 py-1.5 text-xs font-medium text-black opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 lg:block">
+      {label}
+    </span>
+  );
+}
+
+function IconLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link href={href} aria-label={label} className={iconButtonClassName}>
+      {children}
+      <Tooltip label={label} />
+    </Link>
+  );
+}
+
+function IconButton({
+  label,
+  ariaLabel,
+  onClick,
+  children,
+}: {
+  label: string;
+  ariaLabel?: string;
+  onClick?: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel ?? label}
+      className={iconButtonClassName}
+      onClick={onClick}
+    >
+      {children}
+      <Tooltip label={label} />
+    </button>
+  );
+}
 
 export function IconStrip({
   onGoToAyahClick,
@@ -22,7 +71,7 @@ export function IconStrip({
   return (
     <nav
       aria-label="Primary navigation"
-      className="fixed bottom-0 left-0 isolate z-[3] h-[var(--side-nav-size)] w-[calc(100%-var(--removed-body-scroll-bar-size,0px))] translate-y-0 transform-gpu bg-[var(--secondary-bg)] ease-linear lg:bottom-auto lg:top-0 lg:h-full lg:w-[var(--side-nav-size)]"
+      className="fixed bottom-0 left-0 isolate z-[50] h-[var(--side-nav-size)] overflow-visible w-[calc(100%-var(--removed-body-scroll-bar-size,0px))] translate-y-0 transform-gpu bg-[var(--secondary-bg)] ease-linear lg:bottom-auto lg:top-0 lg:h-full lg:w-[var(--side-nav-size)]"
     >
       {/* Logo: exact inspected 36px logo, explicitly positioned to avoid top clipping */}
       <Link
@@ -35,79 +84,44 @@ export function IconStrip({
 
       {/* Desktop icon stack: matches inspected top/height/gap calculation */}
       <div className="absolute left-0 top-[60px] hidden h-[calc(100%_-_110px)] w-full flex-col items-center justify-center gap-6 lg:flex">
-        <Link href="/" aria-label="Home" className={iconButtonClassName}>
+        <IconLink href="/" label="Home">
           <HomeIcon aria-hidden="true" />
-        </Link>
+        </IconLink>
 
-        <Link
-          href="/surah/1"
-          aria-label="Read Quran"
-          aria-current="page"
-          className={iconButtonClassName}
-        >
+        <IconLink href="/surah/1" label="Read Quran">
           <ReadQuranIcon aria-hidden="true" />
-        </Link>
+        </IconLink>
 
-        <button
-          type="button"
-          aria-label="Go to Ayah"
-          className={iconButtonClassName}
-          onClick={onGoToAyahClick}
-        >
+        <IconButton label="Go to Ayah" onClick={onGoToAyahClick}>
           <GoToAyahIcon aria-hidden="true" />
-        </button>
+        </IconButton>
 
-        <button
-          type="button"
-          aria-label="Bookmarks"
-          className={iconButtonClassName}
-          onClick={onBookmarksClick}
-        >
+        <IconButton label="Bookmark" ariaLabel="Bookmarks" onClick={onBookmarksClick}>
           <BookmarkIcon aria-hidden="true" />
-        </button>
+        </IconButton>
 
-        <button
-          type="button"
-          aria-label="More options"
-          className={iconButtonClassName}
-          onClick={onOthersClick}
-        >
+        <IconButton label="Others" ariaLabel="More options" onClick={onOthersClick}>
           <OthersIcon aria-hidden="true" />
-        </button>
+        </IconButton>
       </div>
 
       {/* Mobile/bottom strip fallback. We will polish mobile later. */}
       <div className="flex h-full w-full items-center justify-center gap-6 lg:hidden">
-        <Link href="/surah/1" aria-label="Read Quran" className={iconButtonClassName}>
+        <IconLink href="/surah/1" label="Read Quran">
           <ReadQuranIcon aria-hidden="true" />
-        </Link>
+        </IconLink>
 
-        <button
-          type="button"
-          aria-label="Go to Ayah"
-          className={iconButtonClassName}
-          onClick={onGoToAyahClick}
-        >
+        <IconButton label="Go to Ayah" onClick={onGoToAyahClick}>
           <GoToAyahIcon aria-hidden="true" />
-        </button>
+        </IconButton>
 
-        <button
-          type="button"
-          aria-label="Bookmarks"
-          className={iconButtonClassName}
-          onClick={onBookmarksClick}
-        >
+        <IconButton label="Bookmark" ariaLabel="Bookmarks" onClick={onBookmarksClick}>
           <BookmarkIcon aria-hidden="true" />
-        </button>
+        </IconButton>
 
-        <button
-          type="button"
-          aria-label="More options"
-          className={iconButtonClassName}
-          onClick={onOthersClick}
-        >
+        <IconButton label="Others" ariaLabel="More options" onClick={onOthersClick}>
           <OthersIcon aria-hidden="true" />
-        </button>
+        </IconButton>
       </div>
     </nav>
   );

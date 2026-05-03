@@ -1,54 +1,57 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { SurahMeta } from "@/types/quran.types";
+import {
+  displaySurahArabicName,
+  displaySurahName,
+  displaySurahTranslation,
+} from "@/lib/quran.helpers";
 
 interface Props {
   surahs: SurahMeta[];
   activeSurahNo: number;
 }
 
-function DiamondBadge({ n, active }: { n: number; active: boolean }) {
-  return (
-    <div className="relative flex size-8 min-h-8 min-w-8 items-center justify-center shrink-0">
-      <div
-        className="absolute inset-0 rotate-45 rounded-[6px]"
-        style={{
-          backgroundColor: active ? "var(--primary)" : "var(--secondary-bg)",
-          border: active ? "none" : "1px solid var(--border-color)",
-        }}
-      />
-      <span
-        className="-rotate-0 relative z-10 text-[13px] font-medium"
-        style={{ color: active ? "white" : "var(--subtitle-color)" }}
-      >
-        {n}
-      </span>
-    </div>
-  );
-}
+const TABS = ["Surah", "Juz", "Page"] as const;
 
 export function SurahSidebar({ surahs, activeSurahNo }: Props) {
-  const [tab, setTab] = useState<"Surah" | "Juz" | "Page">("Surah");
+  const [tab, setTab] = useState<(typeof TABS)[number]>("Surah");
   const [query, setQuery] = useState("");
   const activeRef = useRef<HTMLAnchorElement>(null);
 
-  const filtered = surahs.filter((s) =>
-    s.surahName.toLowerCase().includes(query.toLowerCase()) ||
-    String(s.surahNo).includes(query)
-  );
+  const activeIdx = TABS.indexOf(tab);
+
+  const filteredSurahs = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) return surahs;
+
+    return surahs.filter((surah) => {
+      const name = displaySurahName(surah.surahName);
+      const translation = displaySurahTranslation(surah.surahNameTranslation);
+
+      return (
+        String(surah.surahNo).includes(normalizedQuery) ||
+        name.toLowerCase().includes(normalizedQuery) ||
+        translation.toLowerCase().includes(normalizedQuery) ||
+        surah.surahNameArabic.includes(query.trim())
+      );
+    });
+  }, [query, surahs]);
 
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    activeRef.current?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth",
+    });
   }, [activeSurahNo]);
 
-  const tabs = ["Surah", "Juz", "Page"] as const;
-  const activeIdx = tabs.indexOf(tab);
-
   return (
-    <div
-      className="fixed z-20 flex flex-col overflow-x-hidden"
+    <aside
+      aria-label="Surah navigation"
+      className="fixed z-20 hidden flex-col overflow-hidden lg:flex"
       style={{
         left: "var(--side-nav-size)",
         top: "var(--top-nav-size)",
@@ -58,127 +61,183 @@ export function SurahSidebar({ surahs, activeSurahNo }: Props) {
         borderRight: "1px solid var(--border-color)",
       }}
     >
-      <div className="flex h-full w-full flex-col overflow-y-auto pt-6">
-
-        {/* Tabs */}
-        <div className="relative isolate flex min-h-10 items-center rounded-full border-4 mb-4 mx-[26px]"
-          style={{ borderColor: "var(--secondary-bg)", backgroundColor: "var(--secondary-bg)" }}>
-          {tabs.map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className="z-10 h-full w-full text-[15px] font-medium py-2 transition-colors"
-              style={{ color: tab === t ? "var(--pure-color)" : "var(--subtitle-color-secondary)" }}
-            >
-              {t}
-            </button>
-          ))}
-          {/* Sliding pill */}
+      <div className="flex h-full w-full flex-col overflow-hidden pt-6">
+        <div className="px-[26px]">
           <div
-            className="absolute h-full rounded-full transition-transform duration-300 ease-in-out"
+            className="relative isolate mb-4 flex min-h-10 items-center rounded-full border-4"
             style={{
-              width: "calc(33.333%)",
-              transform: `translateX(${activeIdx * 100}%)`,
-              backgroundColor: "var(--primary-bg)",
+              borderColor: "var(--secondary-bg)",
+              backgroundColor: "var(--secondary-bg)",
             }}
-          />
-        </div>
+          >
+            {TABS.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setTab(item)}
+                className="relative z-10 h-full w-full py-1 text-xs transition-colors"
+                style={{
+                  color:
+                    tab === item
+                      ? "var(--pure-color)"
+                      : "var(--subtitle-color-secondary)",
+                  fontWeight: tab === item ? 500 : 300,
+                }}
+              >
+                {item}
+              </button>
+            ))}
 
-        {/* Search */}
-        <div className="mb-4 px-[26px]">
+            <div
+              className="absolute h-full rounded-full transition-transform duration-300 ease-in-out"
+              style={{
+                width: "33.00%",
+                transform: `translateX(${activeIdx * 100}%)`,
+                backgroundColor: "var(--primary-bg)",
+              }}
+            />
+          </div>
+
           <div
-            className="flex h-10 items-center gap-3 rounded-full px-3 border"
+            className="mb-4 flex h-10 items-center gap-3 rounded-full border px-3 text-base"
             style={{
               backgroundColor: "var(--secondary-bg)",
               borderColor: "var(--border-color)",
             }}
           >
-            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" style={{ color: "var(--subtitle-color)", flexShrink: 0 }}>
-              <path d="M18.38 18.37L14.75 14.75M16.71 10.04C16.71 13.72 13.73 16.71 10.05 16.71C6.36 16.71 3.38 13.72 3.38 10.04C3.38 6.36 6.36 3.37 10.05 3.37C13.73 3.37 16.71 6.36 16.71 10.04Z"
-                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <SearchIcon className="h-[21px] w-[21px] shrink-0 text-[var(--subtitle-color)]" />
+
             <input
               type="text"
               placeholder="Search Surah"
               aria-label="Search Surah"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-transparent text-[15px] font-light outline-none"
-              style={{ color: "var(--pure-color)" }}
+              onChange={(event) => setQuery(event.target.value)}
+              className="w-full bg-transparent font-light outline-none placeholder:text-[var(--subtitle-color-70)]"
+              style={{
+                color: "var(--pure-color)",
+                fontSize: "16px",
+              }}
             />
           </div>
         </div>
 
-        {/* Surah list */}
-        <div className="flex-1 overflow-y-auto pb-4 flex flex-col gap-0">
-          {filtered.map((surah) => {
+        <div className="surah-scroll-area min-h-0 flex-1 overflow-y-auto pb-4">
+          {filteredSurahs.map((surah) => {
             const isActive = surah.surahNo === activeSurahNo;
+            const name = displaySurahName(surah.surahName);
+            const translation = displaySurahTranslation(surah.surahNameTranslation);
+            const arabicName = displaySurahArabicName(
+                surah.surahNameArabic,
+                surah.surahNameArabicLong
+            );
+
             return (
-              <div key={surah.surahNo} className="block pb-2 px-[26px]">
+              <div key={surah.surahNo} className="block px-[26px] pb-2">
                 <Link
-                  href={`/surah/${surah.surahNo}`}
                   ref={isActive ? activeRef : null}
-                  className={`group/card flex w-full min-w-[200px] cursor-pointer select-none items-center justify-between gap-5 rounded-md border px-4 h-[76px] transition-colors${isActive ? " active" : ""}`}
+                  href={`/surah/${surah.surahNo}`}
+                  className="group/card flex h-[76px] w-full min-w-[200px] cursor-pointer select-none items-center justify-between gap-5 rounded-xl border px-4 font-semibold transition-colors duration-200 hover:bg-[var(--primary-7)]"
                   style={{
-                    borderColor: isActive ? "rgba(61,140,79,0.3)" : "var(--border-color)",
-                    backgroundColor: isActive ? "var(--primary-7)" : "transparent",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = "var(--primary-7)";
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                    borderColor: isActive
+                      ? "rgba(66,128,56,0.32)"
+                      : "var(--border-color)",
+                    backgroundColor: isActive
+                      ? "var(--primary-7)"
+                      : "transparent",
                   }}
                 >
-                  {/* Diamond badge */}
-                  <div className="relative flex size-8 min-h-8 min-w-8 items-center justify-center shrink-0">
-                    <div
-                      className="absolute inset-0 rotate-45 rounded-[6px] transition-colors"
-                      style={{
-                        backgroundColor: isActive ? "var(--primary)" : "var(--secondary-bg)",
-                        border: isActive ? "none" : "1px solid var(--border-color)",
-                      }}
-                    />
-                    <span
-                      className="relative z-10 text-[13px] font-medium"
-                      style={{ color: isActive ? "white" : "var(--subtitle-color)" }}
-                    >
-                      {surah.surahNo}
-                    </span>
-                  </div>
+                  <DiamondBadge number={surah.surahNo} active={isActive} />
 
-                  {/* Name + translation */}
-                  <div className="flex-grow text-start w-1/2">
+                  <div className="min-w-0 flex-1 text-start">
                     <p
-                      className="line-clamp-1 break-all pr-3 text-[15px] font-medium"
+                      className="line-clamp-1 pr-3 text-[15px] font-semibold leading-[1.25]"
                       style={{ color: "var(--pure-color)" }}
                     >
-                      {surah.surahName}
+                      {name}
                     </p>
+
                     <p
-                      className="line-clamp-1 break-all text-[13px] font-normal"
+                      className="mt-[5px] line-clamp-1 text-[13px] font-normal leading-[1.25]"
                       style={{ color: "var(--subtitle-color-secondary)" }}
                     >
-                      {surah.surahNameTranslation}
+                      {translation}
                     </p>
                   </div>
 
-                  {/* Arabic name */}
                   <span
-                    className="text-right text-[1.25rem] shrink-0"
+                    className="block shrink-0 text-right text-lg leading-none"
                     style={{
-                      fontFamily: "var(--font-arabic)",
-                      color: "var(--subtitle-color)",
+                        color: "var(--subtitle-color)",
+                        fontFamily: "var(--font-calligraphy), var(--font-arabic), Amiri, serif",
                     }}
-                  >
-                    {surah.surahNameArabic}
-                  </span>
+                    >
+                    {arabicName}
+                </span>
                 </Link>
               </div>
             );
           })}
+
+          {filteredSurahs.length === 0 && (
+            <div className="px-[26px] py-8 text-center">
+              <p className="text-[14px] text-[var(--subtitle-color)]">
+                No surah found.
+              </p>
+            </div>
+          )}
         </div>
       </div>
+    </aside>
+  );
+}
+
+function DiamondBadge({
+  number,
+  active,
+}: {
+  number: number;
+  active: boolean;
+}) {
+  return (
+    <div
+      className="relative flex size-8 min-h-8 min-w-8 shrink-0 rotate-45 items-center justify-center rounded-[6px] transition-colors duration-200 shadow-none"
+      style={{
+        backgroundColor: active ? "var(--primary)" : "var(--secondary-bg)",
+        border: "none",
+        boxShadow: "none",
+      }}
+    >
+      <span
+        className="-rotate-45 text-[13px] font-bold leading-none"
+        style={{
+          color: active ? "var(--primary-fg)" : "var(--subtitle-color)",
+        }}
+      >
+        {number}
+      </span>
     </div>
+  );
+}
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        d="M18.3789 18.3721L14.7539 14.7471M16.7122 10.0387C16.7122 13.7206 13.7275 16.7054 10.0456 16.7054C6.36367 16.7054 3.37891 13.7206 3.37891 10.0387C3.37891 6.35684 6.36367 3.37207 10.0456 3.37207C13.7275 3.37207 16.7122 6.35684 16.7122 10.0387Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

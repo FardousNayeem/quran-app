@@ -5,7 +5,7 @@ export const API_URL =
 
 export const TOTAL_SURAHS = 114;
 
-// ─── Reciters ────────────────────────────────────────────────────────────────
+// Reciters
 
 export const RECITERS: Record<string, string> = {
   "1": "Mishary Rashid Al Afasy",
@@ -17,7 +17,7 @@ export const RECITERS: Record<string, string> = {
 
 export const DEFAULT_RECITER_ID = "1";
 
-// ─── Font Options ────────────────────────────────────────────────────────────
+// Font Options
 
 export const ARABIC_FONTS: { id: ArabicFont; label: string; cssVar: string }[] = [
   { id: "uthmanic", label: "Uthmanic (KFGQ)", cssVar: "'KFGQ Uthmanic', serif" },
@@ -31,7 +31,7 @@ export const TRANSLATION_FONTS: { id: TranslationFont; label: string; cssVar: st
   { id: "sourceSerif", label: "Source Serif",  cssVar: "'Source Serif 4', serif" },
 ];
 
-// ─── Default Font Settings ───────────────────────────────────────────────────
+// Default Font Settings
 
 export const DEFAULT_FONT_SETTINGS: FontSettings = {
   arabicFont: "uthmanic",
@@ -42,14 +42,14 @@ export const DEFAULT_FONT_SETTINGS: FontSettings = {
   showArabic2: false,
 };
 
-// ─── Arabic Size Bounds ──────────────────────────────────────────────────────
+// Arabic Size Bound
 
 export const ARABIC_SIZE_MIN = 1.5;
 export const ARABIC_SIZE_MAX = 3.5;
 export const TRANSLATION_SIZE_MIN = 0.8;
 export const TRANSLATION_SIZE_MAX = 1.4;
 
-// ─── localStorage key ────────────────────────────────────────────────────────
+// localStorage key
 
 export const FONT_SETTINGS_KEY = "quran-font-settings";
 export const RECITER_KEY = "quran-reciter";

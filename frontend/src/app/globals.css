@@ -2,7 +2,6 @@
 @import "tailwindcss";
 
 :root {
-  /* QuranMazid-like dark palette */
   --primary: #428038;
   --primary-fg: #ffffff;
   --primary-7: rgba(66, 128, 56, 0.12);
@@ -49,6 +48,7 @@
   --arabic-line-height: 2.2;
   --translation-font-size: 1rem;
   --font-arabic: "Amiri", serif;
+  --font-calligraphy: "Amiri", serif;
   --font-translation: var(--font-geist-sans), sans-serif;
 }
 
@@ -116,4 +116,23 @@ a {
 ::selection {
   background: rgba(66, 128, 56, 0.28);
   color: var(--pure-color);
+}
+
+/* Surah Bar Scroll */
+.surah-scroll-area {
+  scrollbar-width: normal;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.surah-scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.surah-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.surah-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
 }

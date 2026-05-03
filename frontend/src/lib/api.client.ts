@@ -15,20 +15,30 @@ class ApiError extends Error {
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+
+  if (!headers.has("Accept")) {
+    headers.set("Accept", "application/json");
+  }
+
   const res = await fetch(`${API_URL}${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...init,
+    headers,
   });
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ message: "Unknown error" }));
-    throw new ApiError(res.status, body.message ?? `Request failed: ${res.status}`);
+
+    throw new ApiError(
+      res.status,
+      body.message ?? `Request failed: ${res.status}`
+    );
   }
 
   return res.json() as Promise<T>;
 }
 
-// ─── Surah ───────────────────────────────────────────────────────────────────
+// Surah
 
 /** GET /surah — returns all 114 surah metadata objects */
 export async function fetchAllSurahs(): Promise<SurahMeta[]> {
@@ -40,14 +50,14 @@ export async function fetchSurah(surahNo: number): Promise<SurahResponse> {
   return apiFetch<SurahResponse>(`/surah/${surahNo}`);
 }
 
-// ─── Ayah ────────────────────────────────────────────────────────────────────
+// Ayah
 
 /** GET /surah/:surahId/ayah/:ayahNo */
 export async function fetchAyah(surahNo: number, ayahNo: number): Promise<Ayah> {
   return apiFetch<Ayah>(`/surah/${surahNo}/ayah/${ayahNo}`);
 }
 
-// ─── Audio ───────────────────────────────────────────────────────────────────
+// Audio
 
 /** GET /audio/:surahNo/:ayahNo — returns ReciterMap for a single ayah */
 export async function fetchAyahAudio(
@@ -65,7 +75,24 @@ export async function fetchSurahAudio(surahNo: number): Promise<ReciterMap> {
 // ─── Search ──────────────────────────────────────────────────────────────────
 
 /** GET /search?q=<query> */
-export async function fetchSearch(query: string): Promise<SearchResponse> {
-  const params = new URLSearchParams({ q: query });
-  return apiFetch<SearchResponse>(`/search?${params.toString()}`);
+export async function fetchSearch(
+  query: string,
+  signal?: AbortSignal
+): Promise<SearchResponse> {
+  const trimmed = query.trim();
+
+  if (trimmed.length < 2) {
+    return {
+      query: trimmed,
+      total: 0,
+      results: [],
+    };
+  }
+
+  const params = new URLSearchParams({ q: trimmed });
+
+  return apiFetch<SearchResponse>(`/search?${params.toString()}`, {
+    cache: "no-store",
+    signal,
+  });
 }
