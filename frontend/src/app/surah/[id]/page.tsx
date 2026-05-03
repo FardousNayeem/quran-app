@@ -5,9 +5,16 @@ import { notFound } from "next/navigation";
 import { fetchAllSurahs, fetchSurah } from "@/lib/api.client";
 import { displaySurahName, toArabicNumeral } from "@/lib/quran.helpers";
 import type { Ayah, SurahResponse } from "@/types/quran.types";
+import { AyahAudioButton } from "@/components/audio/ayahaudiobtn";
+import { SurahAudioPlayer } from "@/components/audio/surahplayer";
+import type { AudioQueueItem } from "@/hooks/useAudio";
 
 export const dynamicParams = false;
 export const revalidate = 60 * 60 * 12;
+
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
 export async function generateMetadata({
   params,
@@ -52,10 +59,6 @@ export async function generateStaticParams() {
   }
 }
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
-
 export default async function SurahPage({ params }: PageProps) {
   const { id } = await params;
   const surahNo = Number(id);
@@ -78,6 +81,14 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
   const revelationPlace = displayRevelationPlace(surah.meta.revelationPlace);
   const iconSrc = getRevelationIconSrc(surah.meta.revelationPlace);
   const showBismillah = HeaderBismillah(surah.meta.surahNo);
+
+  const audioQueue: AudioQueueItem[] = surah.ayahs.map((ayah) => ({
+    key: `${surah.meta.surahNo}:${ayah.ayahNo}`,
+    surahNo: surah.meta.surahNo,
+    ayahNo: ayah.ayahNo,
+    label: `${title} : ${ayah.ayahNo}`,
+    audio: ayah.audio,
+  }));
 
   return (
     <section
@@ -129,19 +140,33 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
       </header>
 
       <div>
-        {surah.ayahs.map((ayah) => (
+        {surah.ayahs.map((ayah, index) => (
           <AyahCard
             key={`${surah.meta.surahNo}:${ayah.ayahNo}`}
             surahNo={surah.meta.surahNo}
             ayah={ayah}
+            audioQueue={audioQueue}
+            audioIndex={index}
           />
         ))}
       </div>
+
+      <SurahAudioPlayer />
     </section>
   );
 }
 
-function AyahCard({ surahNo, ayah }: { surahNo: number; ayah: Ayah }) {
+function AyahCard({
+  surahNo,
+  ayah,
+  audioQueue,
+  audioIndex,
+}: {
+  surahNo: number;
+  ayah: Ayah;
+  audioQueue: AudioQueueItem[];
+  audioIndex: number;
+}) {
   const ayahReference = `${surahNo}:${ayah.ayahNo}`;
 
   return (
@@ -167,9 +192,7 @@ function AyahCard({ surahNo, ayah }: { surahNo: number; ayah: Ayah }) {
 
       <div className="grid grid-cols-1 gap-7 pt-3 md:grid-cols-[34px_1fr]">
         <div className="hidden flex-col items-center gap-2 md:flex">
-          <AyahActionButton label="Play ayah">
-            <PlayIcon className="h-[18px] w-[18px]" />
-          </AyahActionButton>
+          <AyahAudioButton queue={audioQueue} index={audioIndex} />
 
           <AyahActionButton label="Open reading tools">
             <BookIcon className="h-[22px] w-[22px]" />
@@ -197,12 +220,12 @@ function AyahCard({ surahNo, ayah }: { surahNo: number; ayah: Ayah }) {
           >
             {ayah.arabic1}
             <span
-                className="mx-2 inline align-middle leading-none text-[1.0em] text-[var(--pure-color)]"
-                style={{
-                    fontFamily: "var(--font-kfgq), serif",
-                }}
-                >
-                {toArabicNumeral(ayah.ayahNo)}
+              className="mx-2 inline align-middle leading-none text-[1.0em] text-[var(--pure-color)]"
+              style={{
+                fontFamily: "var(--font-kfgq), serif",
+              }}
+            >
+              {toArabicNumeral(ayah.ayahNo)}
             </span>
           </p>
 
@@ -296,28 +319,6 @@ function getRevelationIconSrc(place: string): string {
 
 function HeaderBismillah(surahNo: number): boolean {
   return surahNo !== 1 && surahNo !== 9;
-}
-
-function PlayIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M3 9.00004V6.33004C3 3.01504 5.3475 1.65754 8.22 3.31504L10.5375 4.65004L12.855 5.98504C15.7275 7.64254 15.7275 10.3575 12.855 12.015L10.5375 13.35L8.22 14.685C5.3475 16.3425 3 14.985 3 11.67V9.00004Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
 }
 
 function BookIcon({ className }: { className?: string }) {
