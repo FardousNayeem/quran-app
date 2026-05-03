@@ -160,3 +160,29 @@ a {
 .route-loading-line-active {
   animation: route-loading-line 650ms ease-in-out forwards;
 }
+
+[id^="ayah-"] {
+  scroll-margin-top: calc(var(--top-nav-size) + 18px);
+}
+
+[id^="ayah-"]:target {
+  background-color: var(--primary-7);
+}
+
+.search-results-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+.search-results-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.search-results-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-results-scroll::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+}

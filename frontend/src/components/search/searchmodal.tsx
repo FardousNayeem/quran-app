@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useSearch } from "@/hooks/useSearch";
+import { displaySurahName } from "@/lib/quran.helpers";
 
 interface SearchModalProps {
   open: boolean;
@@ -37,6 +38,16 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
       document.body.style.overflow = previousOverflow;
     };
   }, [open, onOpenChange]);
+
+  useEffect(() => {
+    if (open) return;
+
+    const timer = window.setTimeout(() => {
+      setQuery("");
+    }, 180);
+
+    return () => window.clearTimeout(timer);
+  }, [open, setQuery]);
 
   if (!open) return null;
 
@@ -73,7 +84,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
           </button>
         </div>
 
-        <div className="max-h-[470px] overflow-y-auto px-3 py-3">
+        <div className="search-results-scroll max-h-[470px] overflow-y-auto px-3 py-3">
           {query.trim().length < 2 ? (
             <SearchState
               title="Search the Quran"
@@ -97,35 +108,44 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
                 {total} result{total === 1 ? "" : "s"}
               </div>
 
-              {results.map((result) => (
-                <Link
-                  key={`${result.surahNo}:${result.ayahNo}`}
-                  href={`/surah/${result.surahNo}#ayah-${result.surahNo}:${result.ayahNo}`}
-                  onClick={() => onOpenChange(false)}
-                  className="block rounded-[12px] border border-transparent px-4 py-3 transition-colors hover:border-[rgba(66,128,56,0.3)] hover:bg-[var(--primary-7)]"
-                >
-                  <div className="mb-2 flex items-center justify-between gap-4">
-                    <p className="text-[14px] font-semibold text-[var(--primary)]">
-                      {result.surahNo}:{result.ayahNo}
+              {results.map((result) => {
+                const surahName = displaySurahName(result.surahName);
+                const ayahId = `ayah-${result.surahNo}:${result.ayahNo}`;
+
+                return (
+                  <Link
+                    key={`${result.surahNo}:${result.ayahNo}`}
+                    href={`/surah/${result.surahNo}#${ayahId}`}
+                    onClick={() => onOpenChange(false)}
+                    className="block rounded-[12px] border border-transparent px-4 py-3 transition-colors hover:border-[rgba(66,128,56,0.3)] hover:bg-[var(--primary-7)]"
+                  >
+                    <div className="mb-2 flex items-center justify-between gap-4">
+                      <p className="text-[14px] font-semibold text-[var(--primary)]">
+                        {result.surahNo}:{result.ayahNo}
+                      </p>
+
+                      <p
+                        dir="rtl"
+                        className="max-w-[360px] truncate text-right text-[19px] text-[var(--subtitle-color)]"
+                        style={{
+                          fontFamily:
+                            "var(--font-arabic), var(--font-kfgq), Amiri, Scheherazade New, serif",
+                        }}
+                      >
+                        {result.arabic1}
+                      </p>
+                    </div>
+
+                    <p className="mb-1 text-[15px] font-semibold text-[var(--pure-color)]">
+                      Surah {surahName}
                     </p>
 
-                    <p
-                      dir="rtl"
-                      className="max-w-[360px] truncate text-right font-arabic text-[18px] text-[var(--subtitle-color)]"
-                    >
-                      {result.arabic1}
+                    <p className="line-clamp-2 text-[14px] leading-6 text-[var(--subtitle-color)]">
+                      {result.english}
                     </p>
-                  </div>
-
-                  <p className="mb-1 text-[15px] font-semibold text-[var(--pure-color)]">
-                    {result.surahName}
-                  </p>
-
-                  <p className="line-clamp-2 text-[14px] leading-6 text-[var(--subtitle-color)]">
-                    {result.english}
-                  </p>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>

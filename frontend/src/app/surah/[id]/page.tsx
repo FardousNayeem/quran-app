@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchAllSurahs, fetchSurah } from "@/lib/api.client";
 import { displaySurahName, toArabicNumeral } from "@/lib/quran.helpers";
@@ -7,6 +8,35 @@ import type { Ayah, SurahResponse } from "@/types/quran.types";
 
 export const dynamicParams = false;
 export const revalidate = 60 * 60 * 12;
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const surahNo = Number(id);
+
+  if (!Number.isInteger(surahNo) || surahNo < 1 || surahNo > 114) {
+    return {
+      title: "Quran Mazid",
+    };
+  }
+
+  const surahs = await fetchAllSurahs().catch(() => []);
+  const meta = surahs.find((surah) => surah.surahNo === surahNo);
+
+  if (!meta) {
+    return {
+      title: `Surah ${surahNo} | Quran Mazid`,
+    };
+  }
+
+  const title = displaySurahName(meta.surahName);
+
+  return {
+    title: `Surah ${title} | Quran Mazid`,
+    description: `Read Surah ${title} with Arabic text, English translation, and recitation.`,
+  };
+}
 
 export async function generateStaticParams() {
   try {

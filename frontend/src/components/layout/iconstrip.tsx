@@ -75,7 +75,7 @@ export function IconStrip({
     >
       {/* Logo: exact inspected 36px logo, explicitly positioned to avoid top clipping */}
       <Link
-        href="/"
+        href="https://quranmazid.com/"
         aria-label="Quran Mazid home"
         className="absolute left-1/2 top-3 hidden -translate-x-1/2 lg:block"
       >
@@ -84,7 +84,7 @@ export function IconStrip({
 
       {/* Desktop icon stack: matches inspected top/height/gap calculation */}
       <div className="absolute left-0 top-[60px] hidden h-[calc(100%_-_110px)] w-full flex-col items-center justify-center gap-6 lg:flex">
-        <IconLink href="/" label="Home">
+        <IconLink href="https://quranmazid.com/" label="Home">
           <HomeIcon aria-hidden="true" />
         </IconLink>
 
