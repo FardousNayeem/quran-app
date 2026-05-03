@@ -5,59 +5,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Design system — all component colors reference these tokens
-        surface: {
-          DEFAULT: "var(--surface)",
-          raised: "var(--surface-raised)",
-          overlay: "var(--surface-overlay)",
-        },
-        border: {
-          DEFAULT: "var(--border)",
-          subtle: "var(--border-subtle)",
-        },
-        text: {
-          primary: "var(--text-primary)",
-          secondary: "var(--text-secondary)",
-          muted: "var(--text-muted)",
-          arabic: "var(--text-arabic)",
-        },
-        accent: {
-          DEFAULT: "var(--accent)",
-          hover: "var(--accent-hover)",
-          muted: "var(--accent-muted)",
-        },
-        icon: {
-          DEFAULT: "var(--icon)",
-          active: "var(--icon-active)",
-        },
-      },
-      fontFamily: {
-        arabic: ["var(--font-arabic)", "serif"],
-        ui: ["var(--font-ui)", "sans-serif"],
+        primary:    "var(--primary)",
+        "primary-fg": "var(--primary-fg)",
+        "primary-7":  "var(--primary-7)",
+        "primary-10": "var(--primary-10)",
+        "primary-bg": "var(--primary-bg)",
+        "secondary-bg": "var(--secondary-bg)",
+        "border-color": "var(--border-color)",
+        "pure-color":   "var(--pure-color)",
+        "subtitle-color": "var(--subtitle-color)",
+        "subtitle-color-secondary": "var(--subtitle-color-secondary)",
+        "icon-color": "var(--icon-color)",
       },
       fontSize: {
-        "arabic-sm": "var(--arabic-size-sm)",
-        "arabic-md": "var(--arabic-size-md)",
-        "arabic-lg": "var(--arabic-size-lg)",
-        "arabic-xl": "var(--arabic-size-xl)",
+        "heading-5": "var(--text-heading-5)",
+        "heading-6": "var(--text-heading-6)",
+        "body":      "var(--text-body)",
+        "title":     "var(--text-title)",
+        "subtitle":  "var(--text-subtitle)",
       },
-      spacing: {
-        "sidebar-icon": "72px",
-        "sidebar-surah": "280px",
+      width: {
+        "side-nav":       "var(--side-nav-size)",
+        "left-sidebar":   "var(--left-sidebar-size)",
+        "right-sidebar":  "var(--right-sidebar-size)",
       },
-      animation: {
-        "fade-in": "fadeIn 0.2s ease-out",
-        "slide-in": "slideIn 0.25s ease-out",
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideIn: {
-          "0%": { transform: "translateX(-12px)", opacity: "0" },
-          "100%": { transform: "translateX(0)", opacity: "1" },
-        },
+      height: {
+        "top-nav": "var(--top-nav-size)",
       },
     },
   },

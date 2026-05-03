@@ -1,19 +1,30 @@
 import { fetchAllSurahs } from "@/lib/api.client";
+import { AppShell } from "@/components/layout/appshell";
 
 export async function generateStaticParams() {
   try {
     const surahs = await fetchAllSurahs();
     return surahs.map((s) => ({ id: String(s.surahNo) }));
   } catch {
-    // Fallback: pre-render all 114 statically if backend is unreachable at build time
     return Array.from({ length: 114 }, (_, i) => ({ id: String(i + 1) }));
   }
 }
 
-export default function SurahPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function SurahPage({ params }: PageProps) {
+  const { id } = await params;
+  const surahNo = Number(id);
+
+  const surahs = await fetchAllSurahs().catch(() => []);
+
   return (
-    <main style={{ color: "white", padding: "2rem" }}>
-      Surah {params.id} — coming in Step 3
-    </main>
+    <AppShell surahs={surahs} activeSurahNo={surahNo}>
+      <div className="p-8" style={{ color: "var(--subtitle-color)" }}>
+        Surah {surahNo} reader — coming next
+      </div>
+    </AppShell>
   );
 }
