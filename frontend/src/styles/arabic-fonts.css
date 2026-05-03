@@ -1,0 +1,26 @@
+/* Amiri — classical Arabic typeface */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Scheherazade New — Unicode Arabic */
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+
+/* Lora — translation serif option */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* Source Serif 4 — translation serif option */
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+/*
+  KFGQ Uthmanic Script (standard Quran font) must be self-hosted.
+  Download from: https://fonts.qurancomplex.gov.sa/
+  Place the .woff2 file at: public/fonts/UthmanicHafs.woff2
+  Then uncomment:
+
+@font-face {
+  font-family: 'KFGQ Uthmanic';
+  src: url('/fonts/UthmanicHafs.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+*/

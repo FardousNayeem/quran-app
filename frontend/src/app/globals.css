@@ -1,0 +1,113 @@
+@import "../styles/arabic-fonts.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --surface: #0f1117;
+  --surface-raised: #161b27;
+  --surface-overlay: #1e2535;
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+
+  /* Text */
+  --text-primary: #e8e8e2;
+  --text-secondary: #9da3ae;
+  --text-muted: #5a6170;
+  --text-arabic: #f0ece0;      /* warm off-white for Arabic */
+
+  /* Accent — warm gold */
+  --accent: #c9a96e;
+  --accent-hover: #d4b97e;
+  --accent-muted: rgba(201, 169, 110, 0.12);
+
+  /* Icons */
+  --icon: #5a6170;
+  --icon-active: #c9a96e;
+
+  /* Font families (set dynamically by useFontSettings hook) */
+  --font-arabic: 'Amiri', serif;
+  --font-ui: var(--font-geist-sans), sans-serif;
+
+  /* Arabic font sizes (set dynamically) */
+  --arabic-size-sm: 1.5rem;
+  --arabic-size-md: 2.2rem;
+  --arabic-size-lg: 2.8rem;
+  --arabic-size-xl: 3.5rem;
+
+  /* Translation font size (set dynamically) */
+  --translation-size: 1rem;
+  --translation-font: var(--font-geist-sans);
+
+  /* Layout */
+  --sidebar-icon-width: 72px;
+  --sidebar-surah-width: 280px;
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--surface);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Arabic Text ────────────────────────────────────────────────────────── */
+.arabic-text {
+  font-family: var(--font-arabic);
+  font-size: var(--arabic-size-md);
+  line-height: 2;
+  direction: rtl;
+  color: var(--text-arabic);
+  letter-spacing: 0;
+}
+
+/* ─── Translation Text ───────────────────────────────────────────────────── */
+.translation-text {
+  font-family: var(--translation-font);
+  font-size: var(--translation-size);
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* ─── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--accent-muted);
+  color: var(--text-primary);
+}
