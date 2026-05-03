@@ -7,37 +7,34 @@ import { TopNav } from "@/components/layout/topnav";
 import { useFontSettings } from "@/hooks/useFontSettings";
 import type { SurahMeta } from "@/types/quran.types";
 
-interface Props {
+interface AppShellProps {
   surahs: SurahMeta[];
   activeSurahNo: number;
   children: React.ReactNode;
 }
 
-export function AppShell({ surahs, activeSurahNo, children }: Props) {
+export function AppShell({
+  surahs,
+  activeSurahNo,
+  children,
+}: AppShellProps) {
   const { settings, update } = useFontSettings();
 
   return (
-    <div style={{ backgroundColor: "var(--primary-bg)", minHeight: "100vh" }}>
-      {/* Fixed: icon strip (far left) */}
+    <div className="min-h-screen bg-[var(--primary-bg)] text-[var(--pure-color)]">
       <IconStrip />
-
-      {/* Fixed: top nav bar */}
       <TopNav />
 
-      {/* Fixed: left sidebar (surah list) */}
       <SurahSidebar surahs={surahs} activeSurahNo={activeSurahNo} />
 
-      {/* Fixed: right panel (settings) */}
       <RightPanel settings={settings} onUpdate={update} />
 
-      {/* Scrollable center content */}
       <main
+        className="min-h-screen bg-[var(--primary-bg)]"
         style={{
           marginLeft: "calc(var(--side-nav-size) + var(--left-sidebar-size))",
           marginRight: "var(--right-sidebar-size)",
           paddingTop: "var(--top-nav-size)",
-          minHeight: "100vh",
-          backgroundColor: "var(--primary-bg)",
         }}
       >
         {children}

@@ -48,13 +48,14 @@ export function SurahSidebar({ surahs, activeSurahNo }: Props) {
 
   return (
     <div
-      className="fixed top-0 z-30 flex h-full flex-col overflow-x-hidden"
+      className="fixed z-20 flex flex-col overflow-x-hidden"
       style={{
         left: "var(--side-nav-size)",
+        top: "var(--top-nav-size)",
+        height: "calc(100vh - var(--top-nav-size))",
         width: "var(--left-sidebar-size)",
-        backgroundColor: "var(--secondary-bg)",
+        backgroundColor: "var(--primary-bg)",
         borderRight: "1px solid var(--border-color)",
-        paddingTop: "var(--top-nav-size)",
       }}
     >
       <div className="flex h-full w-full flex-col overflow-y-auto pt-6">

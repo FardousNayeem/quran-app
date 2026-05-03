@@ -2,46 +2,64 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Core palette (extracted from inspector) ───────────────────── */
-  --primary:           #3d8c4f;        /* green accent */
-  --primary-fg:        #ffffff;
-  --primary-7:         rgba(61,140,79,0.07);
-  --primary-10:        rgba(61,140,79,0.10);
+  /* QuranMazid-like dark palette */
+  --primary: #428038;
+  --primary-fg: #ffffff;
+  --primary-7: rgba(66, 128, 56, 0.12);
+  --primary-10: rgba(66, 128, 56, 0.10);
 
-  --primary-bg:        #1a1a1a;        /* main content bg */
-  --secondary-bg:      #171717;        /* sidebar + strip bg */
+  --primary-bg: #0d0d0d;
+  --secondary-bg: #171717;
 
-  --border-color:      rgba(255,255,255,0.08);
+  --border-color: rgba(255, 255, 255, 0.08);
 
-  --pure-color:        #f0f0f0;        /* primary text */
-  --subtitle-color:    #888888;        /* muted text */
-  --subtitle-color-secondary: #666666;
-  --subtitle-color-70: rgba(136,136,136,0.7);
-  --icon-color:        #666666;
+  --pure-color: #c8c8c8;
+  --dark-color: #c8c8c8;
+  --subtitle-color: #8a8f8b;
+  --subtitle-color-secondary: #6f7470;
+  --subtitle-color-70: rgba(138, 143, 139, 0.7);
+  --icon-color: #8f9491;
 
-  /* ── Typography scale ──────────────────────────────────────────── */
-  --text-heading-5:    1.5rem;
-  --text-heading-6:    1.25rem;
-  --text-body:         1rem;
-  --text-title:        0.9375rem;      /* 15px */
-  --text-subtitle:     0.8125rem;      /* 13px */
+  /* Typography scale */
+  --text-heading-5: 1.5rem;
+  --text-heading-6: 1.25rem;
+  --text-body: 1rem;
+  --text-title: 0.9375rem;
+  --text-subtitle: 0.8125rem;
 
-  /* ── Layout ────────────────────────────────────────────────────── */
-  --side-nav-size:     64px;
+  /* Layout */
+  --side-nav-size: 60px;
+  --_side-nav-size: var(--side-nav-size);
+  --secondary-bg: #171717;
+  --icon-color: #8f9491;
+
+  --top-nav-size: 60px;
+  --_top-nav-size: var(--top-nav-size);
+
   --left-sidebar-size: 340px;
-  --right-sidebar-size:320px;
-  --top-nav-size:      60px;
+  --right-sidebar-size: 340px;
 
-  /* ── Arabic font settings (controlled by RightPanel sliders) ───── */
-  --arabic-font-size:  2rem;
-  --arabic-line-height:2.2;
+  --bottom-bar-size: 0px;
+  --fs: 100vh;
+  --surface: var(--primary-bg);
+  --removed-body-scroll-bar-size: 0px;
+
+  /* Reader font settings */
+  --arabic-font-size: 2rem;
+  --arabic-line-height: 2.2;
   --translation-font-size: 1rem;
-  --font-arabic:       'Amiri', serif;
+  --font-arabic: "Amiri", serif;
+  --font-translation: var(--font-geist-sans), sans-serif;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html {
+  min-height: 100%;
   background: var(--primary-bg);
   color: var(--pure-color);
   -webkit-font-smoothing: antialiased;
@@ -49,24 +67,53 @@ html {
 }
 
 body {
-  font-family: var(--font-geist-sans), sans-serif;
-  background: var(--primary-bg);
   min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--primary-bg);
+  color: var(--pure-color);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ── Scrollbars ──────────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--subtitle-color); }
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
 
-/* ── Arabic text ─────────────────────────────────────────────────── */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--subtitle-color-secondary);
+}
+
+/* Arabic text */
 .font-arabic {
   font-family: var(--font-arabic);
 }
 
-/* ── Selection ───────────────────────────────────────────────────── */
+/* Selection */
 ::selection {
-  background: rgba(61,140,79,0.2);
+  background: rgba(66, 128, 56, 0.28);
   color: var(--pure-color);
 }

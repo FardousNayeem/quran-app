@@ -162,12 +162,13 @@ export function RightPanel({ settings, onUpdate }: Props) {
 
   return (
     <div
-      className="fixed right-0 top-0 z-30 h-full flex flex-col overflow-hidden"
+      className="fixed right-0 z-20 flex flex-col overflow-hidden"
       style={{
+        top: "var(--top-nav-size)",
+        height: "calc(100vh - var(--top-nav-size))",
         width: "var(--right-sidebar-size)",
-        backgroundColor: "var(--secondary-bg)",
+        backgroundColor: "var(--primary-bg)",
         borderLeft: "1px solid var(--border-color)",
-        paddingTop: "var(--top-nav-size)",
       }}
     >
       <div className="relative flex w-full flex-col overflow-y-auto h-full">

@@ -1,114 +1,325 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import type { SVGProps } from "react";
 
-function NavBtn({
-  label,
-  active,
-  onClick,
-  href,
-  children,
-}: {
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
-  href?: string;
-  children: React.ReactNode;
-}) {
-  const cls = `flex size-9 items-center justify-center rounded-sm border-2 transition-all duration-300`;
-  const style = {
-    borderColor: active ? "var(--primary)" : "transparent",
-    color: active ? "var(--primary)" : "var(--icon-color)",
-  };
+type IconProps = SVGProps<SVGSVGElement>;
 
-  if (href) {
-    return (
-      <Link href={href} aria-label={label} title={label}>
-        <span className={cls} style={style}>{children}</span>
-      </Link>
-    );
-  }
+interface IconStripProps {
+  onGoToAyahClick?: () => void;
+  onBookmarksClick?: () => void;
+  onOthersClick?: () => void;
+}
+
+const iconButtonClassName =
+  "flex size-9 items-center justify-center rounded-sm border-2 border-transparent text-[var(--icon-color)] transition-all duration-300 hover:text-[var(--pure-color)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--primary)]/70 [&>svg]:size-[22px] [&>svg]:text-current";
+
+export function IconStrip({
+  onGoToAyahClick,
+  onBookmarksClick,
+  onOthersClick,
+}: IconStripProps) {
   return (
-    <button aria-label={label} title={label} onClick={onClick} className={cls} style={style}>
-      {children}
-    </button>
+    <nav
+      aria-label="Primary navigation"
+      className="fixed bottom-0 left-0 isolate z-[3] h-[var(--side-nav-size)] w-[calc(100%-var(--removed-body-scroll-bar-size,0px))] translate-y-0 transform-gpu bg-[var(--secondary-bg)] ease-linear lg:bottom-auto lg:top-0 lg:h-full lg:w-[var(--side-nav-size)]"
+    >
+      {/* Logo: exact inspected 36px logo, explicitly positioned to avoid top clipping */}
+      <Link
+        href="/"
+        aria-label="Quran Mazid home"
+        className="absolute left-1/2 top-3 hidden -translate-x-1/2 lg:block"
+      >
+        <QuranMazidLogoIcon className="h-9 w-9" aria-hidden="true" />
+      </Link>
+
+      {/* Desktop icon stack: matches inspected top/height/gap calculation */}
+      <div className="absolute left-0 top-[60px] hidden h-[calc(100%_-_110px)] w-full flex-col items-center justify-center gap-6 lg:flex">
+        <Link href="/" aria-label="Home" className={iconButtonClassName}>
+          <HomeIcon aria-hidden="true" />
+        </Link>
+
+        <Link
+          href="/surah/1"
+          aria-label="Read Quran"
+          aria-current="page"
+          className={iconButtonClassName}
+        >
+          <ReadQuranIcon aria-hidden="true" />
+        </Link>
+
+        <button
+          type="button"
+          aria-label="Go to Ayah"
+          className={iconButtonClassName}
+          onClick={onGoToAyahClick}
+        >
+          <GoToAyahIcon aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
+          aria-label="Bookmarks"
+          className={iconButtonClassName}
+          onClick={onBookmarksClick}
+        >
+          <BookmarkIcon aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
+          aria-label="More options"
+          className={iconButtonClassName}
+          onClick={onOthersClick}
+        >
+          <OthersIcon aria-hidden="true" />
+        </button>
+      </div>
+
+      {/* Mobile/bottom strip fallback. We will polish mobile later. */}
+      <div className="flex h-full w-full items-center justify-center gap-6 lg:hidden">
+        <Link href="/surah/1" aria-label="Read Quran" className={iconButtonClassName}>
+          <ReadQuranIcon aria-hidden="true" />
+        </Link>
+
+        <button
+          type="button"
+          aria-label="Go to Ayah"
+          className={iconButtonClassName}
+          onClick={onGoToAyahClick}
+        >
+          <GoToAyahIcon aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
+          aria-label="Bookmarks"
+          className={iconButtonClassName}
+          onClick={onBookmarksClick}
+        >
+          <BookmarkIcon aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
+          aria-label="More options"
+          className={iconButtonClassName}
+          onClick={onOthersClick}
+        >
+          <OthersIcon aria-hidden="true" />
+        </button>
+      </div>
+    </nav>
   );
 }
 
-export function IconStrip() {
-  const pathname = usePathname();
-  const isReader = pathname.startsWith("/surah");
-
+function QuranMazidLogoIcon(props: IconProps) {
   return (
-    <nav
-      className="fixed left-0 top-0 h-full z-40 flex flex-col items-center"
-      style={{
-        width: "var(--side-nav-size)",
-        backgroundColor: "var(--secondary-bg)",
-        borderRight: "1px solid var(--border-color)",
-      }}
+    <svg
+      width="36"
+      height="36"
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
-      {/* Logo */}
-      <Link href="/" className="py-3 flex items-center justify-center w-full">
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-          <path d="M6.99 0H29.01C32.87 0 36 3.13 36 6.99V29.01C36 32.87 32.87 36 29.01 36H6.99C3.13 36 0 32.87 0 29.01V6.99C0 3.13 3.13 0 6.99 0Z" fill="var(--primary)"/>
-          <path d="M26.07 24.57V28.24C26.07 28.36 26.04 28.47 25.98 28.57C25.92 28.67 25.84 28.76 25.74 28.82C25.64 28.88 25.53 28.92 25.41 28.92C25.3 28.93 25.18 28.9 25.07 28.85L18 25.26" stroke="#E2E2E2" strokeWidth="0.78"/>
-          <path d="M9.93 24.57V28.24C9.93 28.36 9.96 28.47 10.02 28.57C10.07 28.67 10.16 28.76 10.26 28.82C10.36 28.88 10.47 28.92 10.59 28.92C10.7 28.93 10.82 28.9 10.92 28.85L18 25.26" stroke="#E2E2E2" strokeWidth="0.78"/>
-          <path opacity="0.35" d="M17.58 24.14C17.58 24.37 17.77 24.56 18 24.56V25.54L8.6 23.61L7.45 23.38C7.09 23.31 6.77 23.12 6.54 22.84C6.31 22.55 6.18 22.2 6.18 21.83V10.87C6.18 9.9 7.05 9.16 8.01 9.31L18 10.9V11.88C17.89 11.88 17.79 11.93 17.71 12.01C17.63 12.08 17.58 12.19 17.58 12.3V24.14Z" fill="#E2E2E2"/>
-          <path opacity="0.35" d="M18.42 24.14C18.42 24.37 18.23 24.56 18 24.56V25.54L27.4 23.61L28.55 23.38C28.91 23.31 29.23 23.12 29.46 22.84C29.7 22.55 29.82 22.2 29.82 21.83V10.87C29.82 9.9 28.95 9.16 27.99 9.31L18 10.9V11.88C18.23 11.88 18.42 12.07 18.42 12.3V24.14Z" fill="#E2E2E2"/>
-          <path d="M17.58 24.14C17.58 24.37 17.77 24.56 18 24.56V25.54L9.93 22.04L8.6 21.46C8.3 21.33 8.04 21.11 7.86 20.84C7.68 20.56 7.58 20.24 7.58 19.91V9.37C7.58 9.1 7.65 8.83 7.78 8.59C7.9 8.34 8.09 8.13 8.31 7.98C8.54 7.82 8.8 7.73 9.07 7.69C9.35 7.66 9.62 7.7 9.88 7.79L18 10.9V11.88C17.89 11.88 17.78 11.93 17.7 12.01C17.63 12.08 17.58 12.19 17.58 12.3V24.14Z" fill="white"/>
-          <path d="M28.03 9.37V19.91C28.03 20.43 27.72 20.9 27.24 21.1L25.91 21.68L18.39 24.94V24.85C18.46 24.81 18.52 24.77 18.57 24.71C18.65 24.64 18.7 24.55 18.75 24.45C18.79 24.36 18.81 24.25 18.81 24.14V12.3C18.81 12.08 18.72 11.88 18.57 11.73C18.52 11.68 18.46 11.63 18.39 11.59V11.17L26.26 8.16C26.46 8.08 26.67 8.06 26.88 8.08C27.09 8.11 27.29 8.18 27.46 8.3C27.64 8.42 27.78 8.58 27.88 8.77C27.97 8.95 28.03 9.16 28.03 9.37Z" fill="#E2E2E2" stroke="#E2E2E2" strokeWidth="0.78"/>
-        </svg>
-      </Link>
+      <path
+        d="M6.99183 0H29.0082C32.8696 0 36 3.13043 36 6.99183V29.0082C36 32.8696 32.8696 36 29.0082 36H6.99183C3.13043 36 0 32.8696 0 29.0082V6.99183C0 3.13043 3.13043 0 6.99183 0Z"
+        fill="var(--primary)"
+      />
+      <path
+        d="M26.0687 24.5654V28.2374C26.0688 28.3545 26.0389 28.4696 25.9818 28.5717C25.9247 28.6739 25.8424 28.7597 25.7427 28.821C25.6429 28.8822 25.5292 28.9168 25.4122 28.9215C25.2953 28.9263 25.1791 28.9009 25.0748 28.8479L18 25.2596"
+        stroke="#E2E2E2"
+        strokeWidth="0.782609"
+      />
+      <path
+        d="M9.92969 24.5654V28.2374C9.92957 28.3545 9.95949 28.4696 10.0166 28.5717C10.0737 28.6739 10.156 28.7597 10.2557 28.821C10.3554 28.8822 10.4692 28.9168 10.5861 28.9215C10.7031 28.9263 10.8193 28.9009 10.9236 28.8479L17.9976 25.2596"
+        stroke="#E2E2E2"
+        strokeWidth="0.782609"
+      />
+      <path
+        opacity="0.35"
+        d="M17.5839 24.1444C17.5839 24.3737 17.7733 24.5591 18.0018 24.5591V25.5405L8.60421 23.6114L7.45143 23.3821C7.093 23.3109 6.77034 23.1177 6.53844 22.8353C6.30654 22.5528 6.17975 22.1987 6.17969 21.8333V10.8729C6.17969 9.90245 7.04838 9.16131 8.00708 9.31392L18.001 10.9026V11.884C17.8908 11.8842 17.7852 11.9279 17.7071 12.0056C17.629 12.0833 17.5847 12.1886 17.5839 12.2988V24.1436V24.1444Z"
+        fill="#E2E2E2"
+      />
+      <path
+        opacity="0.35"
+        d="M18.4171 24.1444C18.4171 24.3737 18.2293 24.5591 18 24.5591V25.5405L27.3976 23.6114L28.5503 23.3821C28.9088 23.3109 29.2314 23.1177 29.4633 22.8353C29.6952 22.5528 29.822 22.1987 29.8221 21.8333V10.8729C29.8221 9.90245 28.9534 9.16131 27.9947 9.31392L18 10.9018V11.8832C18.2285 11.8832 18.4171 12.0687 18.4171 12.298V24.1436V24.1444Z"
+        fill="#E2E2E2"
+      />
+      <path
+        d="M17.5806 24.1443C17.5806 24.3736 17.77 24.5591 17.9986 24.5591V25.5405L9.92986 22.0383L8.60099 21.4623C8.29824 21.3311 8.04048 21.1142 7.85944 20.8383C7.6784 20.5624 7.58197 20.2396 7.58203 19.9096V9.37417C7.58187 9.09963 7.64851 8.82918 7.7762 8.58615C7.9039 8.34312 8.08881 8.13482 8.31498 7.97921C8.54116 7.8236 8.8018 7.72536 9.07441 7.69297C9.34703 7.66058 9.62343 7.69501 9.87977 7.7933L17.9986 10.9026V11.884C17.8883 11.884 17.7824 11.9276 17.7041 12.0053C17.6259 12.083 17.5815 12.1885 17.5806 12.2988V24.1436V24.1443Z"
+        fill="white"
+      />
+      <path
+        d="M28.0252 9.37374V9.37397V19.9095C28.0252 20.4269 27.7175 20.8958 27.2417 21.1032C27.2416 21.1033 27.2415 21.1033 27.2413 21.1034L25.9131 21.6791L25.9129 21.6792L18.3913 24.9439V24.8493C18.4568 24.8131 18.517 24.7678 18.5702 24.7147C18.6452 24.6398 18.7048 24.5509 18.7454 24.453C18.786 24.3551 18.8069 24.2501 18.8069 24.1441V12.2986C18.8069 12.0848 18.7219 11.8798 18.5708 11.7286C18.5173 11.6751 18.4571 11.6299 18.3921 11.5938V11.1708L26.2587 8.15774L26.2589 8.15769C26.4559 8.08214 26.6684 8.05567 26.878 8.08056C27.0875 8.10546 27.2879 8.18098 27.4618 8.3006C27.6356 8.42023 27.7778 8.58036 27.876 8.76718C27.974 8.95384 28.0253 9.16251 28.0252 9.37374Z"
+        fill="#E2E2E2"
+        stroke="#E2E2E2"
+        strokeWidth="0.782609"
+      />
+    </svg>
+  );
+}
 
-      {/* Nav icons — centered vertically */}
-      <div className="flex flex-col items-center justify-center gap-6 flex-1 pb-4">
-        {/* Home */}
-        <NavBtn label="Home" href="/">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M9.23 2.58L2.88 7.67C2.16 8.24 1.7 9.44 1.86 10.34L3.08 17.64C3.3 18.94 4.55 20 5.87 20H16.13C17.44 20 18.7 18.93 18.92 17.64L20.14 10.34C20.29 9.44 19.83 8.24 19.12 7.67L12.77 2.59C11.79 1.81 10.2 1.81 9.23 2.58Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M11 14.21C12.27 14.21 13.29 13.18 13.29 11.92C13.29 10.65 12.27 9.63 11 9.63C9.74 9.63 8.71 10.65 8.71 11.92C8.71 13.18 9.74 14.21 11 14.21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </NavBtn>
+function HomeIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M9.23051 2.58494L2.87801 7.67243C2.16301 8.24076 1.70467 9.44163 1.86051 10.34L3.07968 17.6366C3.29968 18.9383 4.54634 19.9924 5.86634 19.9924H16.133C17.4438 19.9924 18.6997 18.9291 18.9197 17.6366L20.1388 10.34C20.2855 9.44163 19.8272 8.24076 19.1213 7.67243L12.7688 2.59411C11.788 1.80578 10.2022 1.80577 9.23051 2.58494Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11.0007 14.2083C12.2663 14.2083 13.2923 13.1823 13.2923 11.9167C13.2923 10.651 12.2663 9.625 11.0007 9.625C9.735 9.625 8.70898 10.651 8.70898 11.9167C8.70898 13.1823 9.735 14.2083 11.0007 14.2083Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-        {/* Read Quran — active when on surah page */}
-        <NavBtn label="Read Quran" href="/surah/1" active={isReader}>
-          <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-            <path opacity="0.4" d="M20.23 2.17H18.17C15.81 2.17 14.56 3.41 14.56 5.77V7.83C14.56 10.19 15.81 11.44 18.17 11.44H20.23C22.59 11.44 23.83 10.19 23.83 7.83V5.77C23.83 3.41 22.59 2.17 20.23 2.17Z" fill="currentColor"/>
-            <path opacity="0.4" d="M7.84 14.55H5.78C3.41 14.55 2.17 15.79 2.17 18.16V20.21C2.17 22.59 3.41 23.83 5.77 23.83H7.83C10.19 23.83 11.44 22.59 11.44 20.23V18.17C11.45 15.79 10.2 14.55 7.84 14.55Z" fill="currentColor"/>
-            <path d="M6.81 11.46C9.38 11.46 11.46 9.38 11.46 6.81C11.46 4.25 9.38 2.17 6.81 2.17C4.25 2.17 2.17 4.25 2.17 6.81C2.17 9.38 4.25 11.46 6.81 11.46Z" fill="currentColor"/>
-            <path d="M19.19 23.83C21.75 23.83 23.83 21.75 23.83 19.19C23.83 16.62 21.75 14.54 19.19 14.54C16.62 14.54 14.54 16.62 14.54 19.19C14.54 21.75 16.62 23.83 19.19 23.83Z" fill="currentColor"/>
-          </svg>
-        </NavBtn>
+function ReadQuranIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="26"
+      height="26"
+      viewBox="0 0 26 26"
+      fill="none"
+      {...props}
+    >
+      <path
+        opacity="0.4"
+        d="M20.2264 2.16675H18.168C15.8064 2.16675 14.5605 3.41258 14.5605 5.77425V7.83258C14.5605 10.1942 15.8064 11.4401 18.168 11.4401H20.2264C22.588 11.4401 23.8339 10.1942 23.8339 7.83258V5.77425C23.8339 3.41258 22.588 2.16675 20.2264 2.16675Z"
+        fill="currentColor"
+      />
+      <path
+        opacity="0.4"
+        d="M7.84268 14.5491H5.78435C3.41185 14.5491 2.16602 15.7949 2.16602 18.1566V20.2149C2.16602 22.5874 3.41185 23.8332 5.77352 23.8332H7.83185C10.1935 23.8332 11.4394 22.5874 11.4394 20.2257V18.1674C11.4502 15.7949 10.2043 14.5491 7.84268 14.5491Z"
+        fill="currentColor"
+      />
+      <path
+        d="M6.81352 11.4617C9.38026 11.4617 11.461 9.38099 11.461 6.81425C11.461 4.2475 9.38026 2.16675 6.81352 2.16675C4.24677 2.16675 2.16602 4.2475 2.16602 6.81425C2.16602 9.38099 4.24677 11.4617 6.81352 11.4617Z"
+        fill="currentColor"
+      />
+      <path
+        d="M19.1866 23.8333C21.7533 23.8333 23.8341 21.7526 23.8341 19.1858C23.8341 16.6191 21.7533 14.5383 19.1866 14.5383C16.6198 14.5383 14.5391 16.6191 14.5391 19.1858C14.5391 21.7526 16.6198 23.8333 19.1866 23.8333Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
-        {/* Go to Ayah */}
-        <NavBtn label="Go to Ayah">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M6.78 5.79L14.57 3.2C18.06 2.03 19.96 3.94 18.8 7.43L16.21 15.22C14.46 20.45 11.6 20.45 9.86 15.22L9.09 12.91L6.78 12.14C1.55 10.39 1.55 7.54 6.78 5.79Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M9.27 12.51L12.55 9.22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </NavBtn>
+function GoToAyahIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M6.78305 5.79323L14.5655 3.19906C18.058 2.0349 19.9555 3.94156 18.8005 7.43406L16.2064 15.2166C14.4647 20.4507 11.6047 20.4507 9.86305 15.2166L9.09305 12.9066L6.78305 12.1366C1.54888 10.3949 1.54888 7.54406 6.78305 5.79323Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.26758 12.5125L12.5492 9.22168"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-        {/* Bookmarks */}
-        <NavBtn label="Bookmarks" href="/bookmarks">
-          <svg width="16" height="18" viewBox="0 0 16 18" fill="none">
-            <path d="M1.64 13.75V7.18C1.64 4.29 1.64 2.85 2.58 1.95C3.51 1.06 5.0 1.06 8 1.06C11 1.06 12.49 1.06 13.42 1.95C14.36 2.85 14.36 4.29 14.36 7.18V13.75C14.36 15.58 14.36 16.5 13.74 16.83C12.55 17.46 10.32 15.34 9.26 14.71C8.65 14.34 8.34 14.15 8 14.15C7.66 14.15 7.35 14.34 6.74 14.71C5.68 15.34 3.45 17.46 2.26 16.83C1.64 16.5 1.64 15.58 1.64 13.75Z" stroke="currentColor" strokeWidth="1.39" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M1.64 5.03H14.36" stroke="currentColor" strokeWidth="1.39" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </NavBtn>
+function BookmarkIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="18"
+      viewBox="0 0 16 18"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M1.64453 13.7513V7.17862C1.64453 4.29211 1.64453 2.84886 2.57528 1.95214C3.50603 1.05542 5.00405 1.05542 8.00009 1.05542C10.9961 1.05542 12.4942 1.05542 13.4249 1.95214C14.3556 2.84886 14.3556 4.29211 14.3556 7.17862V13.7513C14.3556 15.5832 14.3556 16.4991 13.7417 16.827C12.5527 17.4618 10.3224 15.3437 9.26325 14.7059C8.64899 14.336 8.34186 14.151 8.00009 14.151C7.65832 14.151 7.35118 14.336 6.73692 14.7059C5.67777 15.3437 3.4475 17.4618 2.25852 16.827C1.64453 16.4991 1.64453 15.5832 1.64453 13.7513Z"
+        stroke="currentColor"
+        strokeWidth="1.38569"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1.64453 5.02588H14.3556"
+        stroke="currentColor"
+        strokeWidth="1.38569"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-        {/* More */}
-        <NavBtn label="More options">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M20.17 7.58V3.88C20.17 2.42 19.58 1.83 18.12 1.83H14.42C12.96 1.83 12.38 2.42 12.38 3.88V7.58C12.38 9.04 12.96 9.62 14.42 9.62H18.12C19.58 9.62 20.17 9.04 20.17 7.58Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M9.63 7.81V3.65C9.63 2.36 9.04 1.83 7.58 1.83H3.88C2.42 1.83 1.83 2.36 1.83 3.65V7.8C1.83 9.1 2.42 9.62 3.88 9.62H7.58C9.04 9.62 9.63 9.1 9.63 7.81Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M9.63 18.12V14.42C9.63 12.96 9.04 12.38 7.58 12.38H3.88C2.42 12.38 1.83 12.96 1.83 14.42V18.12C1.83 19.58 2.42 20.17 3.88 20.17H7.58C9.04 20.17 9.63 19.58 9.63 18.12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M13.75 14.21H19.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M13.75 17.88H19.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-        </NavBtn>
-      </div>
-    </nav>
+function OthersIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M20.1667 7.58075V3.87742C20.1667 2.41992 19.58 1.83325 18.1225 1.83325H14.4192C12.9617 1.83325 12.375 2.41992 12.375 3.87742V7.58075C12.375 9.03825 12.9617 9.62492 14.4192 9.62492H18.1225C19.58 9.62492 20.1667 9.03825 20.1667 7.58075Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.62565 7.80992V3.64825C9.62565 2.35575 9.03898 1.83325 7.58148 1.83325H3.87815C2.42065 1.83325 1.83398 2.35575 1.83398 3.64825V7.80075C1.83398 9.10242 2.42065 9.61575 3.87815 9.61575H7.58148C9.03898 9.62492 9.62565 9.10242 9.62565 7.80992Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.62565 18.1225V14.4192C9.62565 12.9617 9.03898 12.375 7.58148 12.375H3.87815C2.42065 12.375 1.83398 12.9617 1.83398 14.4192V18.1225C1.83398 19.58 2.42065 20.1667 3.87815 20.1667H7.58148C9.03898 20.1667 9.62565 19.58 9.62565 18.1225Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.75 14.2083H19.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13.75 17.875H19.25"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
