@@ -9,16 +9,22 @@ import {
   TRANSLATION_FONTS,
 } from "@/lib/constants";
 
-function getInitialSettings(): FontSettings {
+function readStoredSettings(): FontSettings {
   if (typeof window === "undefined") {
     return DEFAULT_FONT_SETTINGS;
   }
 
   try {
     const saved = window.localStorage.getItem(FONT_SETTINGS_KEY);
-    return saved
-      ? { ...DEFAULT_FONT_SETTINGS, ...(JSON.parse(saved) as Partial<FontSettings>) }
-      : DEFAULT_FONT_SETTINGS;
+
+    if (!saved) {
+      return DEFAULT_FONT_SETTINGS;
+    }
+
+    return {
+      ...DEFAULT_FONT_SETTINGS,
+      ...(JSON.parse(saved) as Partial<FontSettings>),
+    };
   } catch {
     return DEFAULT_FONT_SETTINGS;
   }
@@ -35,12 +41,20 @@ function applyToDOM(settings: FontSettings) {
 
   root.style.setProperty("--font-arabic", arabicFont?.cssVar ?? "serif");
   root.style.setProperty("--font-translation", translationFont?.cssVar ?? "sans-serif");
-  root.style.setProperty("--arabic-font-size", `${settings.arabicSize}rem`);
-  root.style.setProperty("--translation-font-size", `${settings.translationSize}rem`);
+  root.style.setProperty("--arabic-font-size", `${settings.arabicSize}px`);
+  root.style.setProperty("--translation-font-size", `${settings.translationSize}px`);
 }
 
 export function useFontSettings() {
-  const [settings, setSettings] = useState<FontSettings>(getInitialSettings);
+  // Always start with the same value on server and client
+  const [settings, setSettings] = useState<FontSettings>(DEFAULT_FONT_SETTINGS);
+  const [hasLoadedStoredSettings, setHasLoadedStoredSettings] = useState(false);
+
+  useEffect(() => {
+    const stored = readStoredSettings();
+    setSettings(stored);
+    setHasLoadedStoredSettings(true);
+  }, []);
 
   useEffect(() => {
     applyToDOM(settings);
@@ -60,5 +74,9 @@ export function useFontSettings() {
     });
   };
 
-  return { settings, update };
+  return {
+    settings,
+    update,
+    hasLoadedStoredSettings,
+  };
 }

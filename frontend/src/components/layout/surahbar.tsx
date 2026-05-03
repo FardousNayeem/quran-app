@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { SurahMeta } from "@/types/quran.types";
 import {
   displaySurahArabicName,
@@ -11,12 +12,19 @@ import {
 
 interface Props {
   surahs: SurahMeta[];
-  activeSurahNo: number;
 }
 
 const TABS = ["Surah", "Juz", "Page"] as const;
 
-export function SurahSidebar({ surahs, activeSurahNo }: Props) {
+function getActiveSurahFromPath(pathname: string): number {
+  const match = pathname.match(/\/surah\/(\d+)/);
+  return match ? Number(match[1]) : 1;
+}
+
+export function SurahSidebar({ surahs }: Props) {
+  const pathname = usePathname();
+  const activeSurahNo = getActiveSurahFromPath(pathname);
+
   const [tab, setTab] = useState<(typeof TABS)[number]>("Surah");
   const [query, setQuery] = useState("");
   const activeRef = useRef<HTMLAnchorElement>(null);
@@ -126,10 +134,12 @@ export function SurahSidebar({ surahs, activeSurahNo }: Props) {
           {filteredSurahs.map((surah) => {
             const isActive = surah.surahNo === activeSurahNo;
             const name = displaySurahName(surah.surahName);
-            const translation = displaySurahTranslation(surah.surahNameTranslation);
+            const translation = displaySurahTranslation(
+              surah.surahNameTranslation
+            );
             const arabicName = displaySurahArabicName(
-                surah.surahNameArabic,
-                surah.surahNameArabicLong
+              surah.surahNameArabic,
+              surah.surahNameArabicLong
             );
 
             return (
@@ -137,6 +147,7 @@ export function SurahSidebar({ surahs, activeSurahNo }: Props) {
                 <Link
                   ref={isActive ? activeRef : null}
                   href={`/surah/${surah.surahNo}`}
+                  prefetch
                   className="group/card flex h-[76px] w-full min-w-[200px] cursor-pointer select-none items-center justify-between gap-5 rounded-xl border px-4 font-semibold transition-colors duration-200 hover:bg-[var(--primary-7)]"
                   style={{
                     borderColor: isActive
@@ -166,14 +177,16 @@ export function SurahSidebar({ surahs, activeSurahNo }: Props) {
                   </div>
 
                   <span
-                    className="block shrink-0 text-right text-lg leading-none"
+                    dir="rtl"
+                    className="block max-w-[78px] shrink-0 truncate text-right text-lg leading-none"
                     style={{
-                        color: "var(--subtitle-color)",
-                        fontFamily: "var(--font-calligraphy), var(--font-arabic), Amiri, serif",
+                      color: "var(--subtitle-color)",
+                      fontFamily:
+                        "var(--font-calligraphy), var(--font-arabic), Amiri, serif",
                     }}
-                    >
+                  >
                     {arabicName}
-                </span>
+                  </span>
                 </Link>
               </div>
             );

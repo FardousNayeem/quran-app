@@ -9,15 +9,10 @@ import type { SurahMeta } from "@/types/quran.types";
 
 interface AppShellProps {
   surahs: SurahMeta[];
-  activeSurahNo: number;
   children: React.ReactNode;
 }
 
-export function AppShell({
-  surahs,
-  activeSurahNo,
-  children,
-}: AppShellProps) {
+export function AppShell({ surahs, children }: AppShellProps) {
   const { settings, update } = useFontSettings();
 
   return (
@@ -25,7 +20,7 @@ export function AppShell({
       <IconStrip />
       <TopNav />
 
-      <SurahSidebar surahs={surahs} activeSurahNo={activeSurahNo} />
+      <SurahSidebar surahs={surahs} />
 
       <RightPanel settings={settings} onUpdate={update} />
 

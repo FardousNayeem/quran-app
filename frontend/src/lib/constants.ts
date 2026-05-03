@@ -1,4 +1,8 @@
-import type { ArabicFont, FontSettings, TranslationFont } from "@/types/quran.types";
+import type {
+  ArabicFont,
+  FontSettings,
+  TranslationFont,
+} from "@/types/quran.types";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
@@ -19,35 +23,69 @@ export const DEFAULT_RECITER_ID = "1";
 
 // Font Options
 
-export const ARABIC_FONTS: { id: ArabicFont; label: string; cssVar: string }[] = [
-  { id: "uthmanic", label: "Uthmanic (KFGQ)", cssVar: "'KFGQ Uthmanic', serif" },
-  { id: "amiri",    label: "Amiri",           cssVar: "'Amiri', serif" },
-  { id: "scheherazade", label: "Scheherazade", cssVar: "'Scheherazade New', serif" },
+export const ARABIC_FONTS: {
+  id: ArabicFont;
+  label: string;
+  cssVar: string;
+}[] = [
+  {
+    id: "uthmanic",
+    label: "Uthmanic (KFGQ)",
+    cssVar: "var(--font-kfgq)",
+  },
+  {
+    id: "amiri",
+    label: "Amiri",
+    cssVar: "var(--font-amiri)",
+  },
+  {
+    id: "scheherazade",
+    label: "Scheherazade",
+    cssVar: "var(--font-scheherazade)",
+  },
 ];
 
-export const TRANSLATION_FONTS: { id: TranslationFont; label: string; cssVar: string }[] = [
-  { id: "geist",       label: "Geist Sans",    cssVar: "var(--font-geist-sans)" },
-  { id: "lora",        label: "Lora",          cssVar: "'Lora', serif" },
-  { id: "sourceSerif", label: "Source Serif",  cssVar: "'Source Serif 4', serif" },
+export const TRANSLATION_FONTS: {
+  id: TranslationFont;
+  label: string;
+  cssVar: string;
+}[] = [
+  {
+    id: "geist",
+    label: "Inter",
+    cssVar: "var(--font-app)",
+  },
+  {
+    id: "lora",
+    label: "Lora",
+    cssVar: "var(--font-lora)",
+  },
+  {
+    id: "sourceSerif",
+    label: "Source Serif",
+    cssVar: "var(--font-source-serif)",
+  },
 ];
 
 // Default Font Settings
+// These values are pixels, matching the target UI sliders.
 
 export const DEFAULT_FONT_SETTINGS: FontSettings = {
   arabicFont: "uthmanic",
-  arabicSize: 2.2,
+  arabicSize: 30,
   translationFont: "geist",
-  translationSize: 1.0,
+  translationSize: 17,
   showTranslation: true,
   showArabic2: false,
 };
 
-// Arabic Size Bound
+// Size bounds are pixels, matching the target inspected slider ranges.
 
-export const ARABIC_SIZE_MIN = 1.5;
-export const ARABIC_SIZE_MAX = 3.5;
-export const TRANSLATION_SIZE_MIN = 0.8;
-export const TRANSLATION_SIZE_MAX = 1.4;
+export const ARABIC_SIZE_MIN = 18;
+export const ARABIC_SIZE_MAX = 100;
+
+export const TRANSLATION_SIZE_MIN = 14;
+export const TRANSLATION_SIZE_MAX = 44;
 
 // localStorage key
 

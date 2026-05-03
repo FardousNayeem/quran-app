@@ -123,8 +123,8 @@ export function RightPanel({ settings, onUpdate }: Props) {
   const activeTab = settings.showTranslation ? "Translation" : "Reading";
   const activeIdx = tabs.indexOf(activeTab);
 
-  const arabicDisplay = Math.round(settings.arabicSize * 13.6).toString();
-  const translationDisplay = Math.round(settings.translationSize * 16.7).toString();
+  const arabicDisplay = Math.round(settings.arabicSize).toString();
+  const translationDisplay = Math.round(settings.translationSize).toString();
 
   const ReadingIconClosed = (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
