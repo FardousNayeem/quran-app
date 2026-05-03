@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useAudio } from "@/hooks/useAudio";
 
 export function SurahAudioPlayer() {
@@ -9,10 +10,12 @@ export function SurahAudioPlayer() {
     currentTime,
     duration,
     isPlayerVisible,
+    isContinuous,
     toggle,
     next,
     previous,
     seek,
+    toggleContinuous,
     closePlayer,
   } = useAudio();
 
@@ -27,9 +30,7 @@ export function SurahAudioPlayer() {
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-[70] border-t border-[var(--border-color)] bg-[var(--secondary-bg)]"
-      style={{
-        height: "58px",
-      }}
+      style={{ height: "58px" }}
     >
       <div className="relative h-full">
         <input
@@ -44,7 +45,7 @@ export function SurahAudioPlayer() {
           style={
             {
               "--audio-progress": `${progress}%`,
-            } as React.CSSProperties
+            } as CSSProperties
           }
         />
 
@@ -55,19 +56,14 @@ export function SurahAudioPlayer() {
             </p>
           </div>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-7">
             <span className="w-[52px] text-right text-[13px] text-[var(--subtitle-color)]">
               {formatTime(currentTime)}
             </span>
 
-            <button
-              type="button"
-              aria-label="Previous ayah"
-              onClick={() => void previous()}
-              className="text-[var(--icon-color)] transition-colors hover:text-[var(--pure-color)]"
-            >
+            <PlayerButton label="Previous ayah" onClick={() => void previous()}>
               <PreviousIcon />
-            </button>
+            </PlayerButton>
 
             <button
               type="button"
@@ -84,23 +80,34 @@ export function SurahAudioPlayer() {
               )}
             </button>
 
-            <button
-              type="button"
-              aria-label="Next ayah"
-              onClick={() => void next()}
-              className="text-[var(--icon-color)] transition-colors hover:text-[var(--pure-color)]"
-            >
+            <PlayerButton label="Next ayah" onClick={() => void next()}>
               <NextIcon />
-            </button>
+            </PlayerButton>
 
             <button
               type="button"
-              aria-label="Close audio player"
-              onClick={closePlayer}
-              className="text-[var(--icon-color)] transition-colors hover:text-[var(--pure-color)]"
+              aria-label={
+                isContinuous
+                  ? "Disable continuous playback"
+                  : "Enable continuous playback"
+              }
+              onClick={toggleContinuous}
+              className="rounded-full px-3 py-1 text-[12px] font-semibold transition-colors"
+              style={{
+                backgroundColor: isContinuous
+                  ? "var(--primary)"
+                  : "var(--primary-7)",
+                color: isContinuous
+                  ? "var(--primary-fg)"
+                  : "var(--subtitle-color)",
+              }}
             >
-              <CloseIcon />
+              Auto
             </button>
+
+            <PlayerButton label="Close audio player" onClick={closePlayer}>
+              <CloseIcon />
+            </PlayerButton>
 
             <span className="w-[62px] text-left text-[13px] text-[var(--subtitle-color)]">
               {formatTime(duration)}
@@ -109,6 +116,27 @@ export function SurahAudioPlayer() {
         </div>
       </div>
     </div>
+  );
+}
+
+function PlayerButton({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className="text-[var(--icon-color)] transition-colors hover:text-[var(--pure-color)]"
+    >
+      {children}
+    </button>
   );
 }
 
@@ -156,10 +184,7 @@ function PauseIcon() {
 function PreviousIcon() {
   return (
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M19 5L9 12L19 19V5Z"
-        fill="currentColor"
-      />
+      <path d="M19 5L9 12L19 19V5Z" fill="currentColor" />
       <path
         d="M5 5V19"
         stroke="currentColor"
@@ -173,10 +198,7 @@ function PreviousIcon() {
 function NextIcon() {
   return (
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M5 5L15 12L5 19V5Z"
-        fill="currentColor"
-      />
+      <path d="M5 5L15 12L5 19V5Z" fill="currentColor" />
       <path
         d="M19 5V19"
         stroke="currentColor"

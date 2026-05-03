@@ -214,3 +214,85 @@ a {
   border-radius: 999px;
   background: var(--primary);
 }
+
+/* Ayah Card Tooltips */
+
+.ayah-action-tooltip-label {
+  pointer-events: none;
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  z-index: 60;
+  transform: translateY(-50%) translateX(-4px);
+  white-space: nowrap;
+  border-radius: 8px;
+  background: #d7d7d7;
+  color: #111111;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.ayah-action-tooltip:hover .ayah-action-tooltip-label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.audio-progress-range {
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--audio-progress),
+    var(--border-color) var(--audio-progress),
+    var(--border-color) 100%
+  );
+  outline: none;
+}
+
+.audio-progress-range::-webkit-slider-thumb {
+  appearance: none;
+  height: 11px;
+  width: 11px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.audio-progress-range::-moz-range-thumb {
+  height: 11px;
+  width: 11px;
+  border: none;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+/* Highlight Played Ayah */
+
+[data-active-ayah="true"] {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(61, 140, 79, 0.12) 0%,
+      rgba(61, 140, 79, 0.055) 42%,
+      transparent 100%
+    );
+}
+
+[data-active-ayah="true"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 3px;
+  background: var(--primary);
+}
+
+[data-active-ayah="true"] [data-ayah-ref] {
+  color: var(--primary);
+}

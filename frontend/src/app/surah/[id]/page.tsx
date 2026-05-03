@@ -2,12 +2,15 @@ import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import { fetchAllSurahs, fetchSurah } from "@/lib/api.client";
 import { displaySurahName, toArabicNumeral } from "@/lib/quran.helpers";
 import type { Ayah, SurahResponse } from "@/types/quran.types";
 import { AyahAudioButton } from "@/components/audio/ayahaudiobtn";
 import { SurahAudioPlayer } from "@/components/audio/surahplayer";
 import type { AudioQueueItem } from "@/hooks/useAudio";
+import { AyahMoreMenu } from "@/components/reader/moremenu";
+import { AyahCardShell } from "@/components/reader/ayahcardshell";
 
 export const dynamicParams = false;
 export const revalidate = 60 * 60 * 12;
@@ -144,6 +147,7 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
           <AyahCard
             key={`${surah.meta.surahNo}:${ayah.ayahNo}`}
             surahNo={surah.meta.surahNo}
+            surahName={title}
             ayah={ayah}
             audioQueue={audioQueue}
             audioIndex={index}
@@ -158,11 +162,13 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
 
 function AyahCard({
   surahNo,
+  surahName,
   ayah,
   audioQueue,
   audioIndex,
 }: {
   surahNo: number;
+  surahName: string;
   ayah: Ayah;
   audioQueue: AudioQueueItem[];
   audioIndex: number;
@@ -170,12 +176,9 @@ function AyahCard({
   const ayahReference = `${surahNo}:${ayah.ayahNo}`;
 
   return (
-    <article
-      id={`ayah-${ayahReference}`}
-      className="relative overflow-hidden border-b border-[var(--border-color)] px-[var(--reader-padding-x)] py-6 transition-colors duration-200"
-    >
+    <AyahCardShell ayahReference={ayahReference}>
       <div className="flex items-center justify-between">
-        <p className="pl-2 text-base font-semibold text-[var(--primary)]">
+        <p data-ayah-ref className="pl-2 text-base font-bold text-[var(--primary)]">
           {ayahReference}
         </p>
 
@@ -194,17 +197,21 @@ function AyahCard({
         <div className="hidden flex-col items-center gap-2 md:flex">
           <AyahAudioButton queue={audioQueue} index={audioIndex} />
 
-          <AyahActionButton label="Open reading tools">
+          <AyahActionButton label="Open Tafsir" tooltip="Tafsir">
             <BookIcon className="h-[22px] w-[22px]" />
           </AyahActionButton>
 
-          <AyahActionButton label="Bookmark ayah">
+          <AyahActionButton label="Bookmark Ayah" tooltip="Bookmark">
             <BookmarkIcon className="h-5 w-5" />
           </AyahActionButton>
 
-          <AyahActionButton label="More ayah actions">
-            <MoreIcon className="h-5 w-5" />
-          </AyahActionButton>
+          <AyahMoreMenu
+            surahNo={surahNo}
+            ayahNo={ayah.ayahNo}
+            surahName={surahName}
+            arabic={ayah.arabic1}
+            english={ayah.english}
+          />
         </div>
 
         <div>
@@ -247,23 +254,26 @@ function AyahCard({
           </div>
         </div>
       </div>
-    </article>
+    </AyahCardShell>
   );
 }
 
 function AyahActionButton({
   label,
+  tooltip,
   children,
 }: {
   label: string;
+  tooltip: string;
   children: ReactNode;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
-      className="group flex size-[34px] min-w-[34px] cursor-pointer items-center justify-center rounded-full bg-transparent text-[var(--icon-color)] transition-colors active:scale-90 hover:bg-[var(--primary-7)] hover:text-[var(--pure-color)]"
+      className="ayah-action-tooltip group relative flex size-[34px] min-w-[34px] cursor-pointer items-center justify-center rounded-full bg-transparent text-[var(--icon-color)] transition-colors active:scale-90 hover:bg-[var(--primary-7)] hover:text-[var(--pure-color)]"
     >
+      <span className="ayah-action-tooltip-label">{tooltip}</span>
       {children}
     </button>
   );

@@ -4,7 +4,7 @@ import { IconStrip } from "@/components/layout/iconstrip";
 import { TopNav } from "@/components/layout/topnav";
 import { RouteLoadingLine } from "@/components/layout/loadingline";
 import { SurahSidebar } from "@/components/layout/surahbar";
-import { RightPanel } from "@/components/layout/rightpanel";
+import { RightPanel } from "@/components/layout/settingspanel";
 import { useFontSettings } from "@/hooks/useFontSettings";
 import type { SurahMeta } from "@/types/quran.types";
 

@@ -32,6 +32,7 @@ interface AudioState {
   duration: number;
   currentTime: number;
   isPlayerVisible: boolean;
+  isContinuous: boolean;
 }
 
 let currentAudio: HTMLAudioElement | null = null;
@@ -45,6 +46,7 @@ let audioState: AudioState = {
   duration: 0,
   currentTime: 0,
   isPlayerVisible: false,
+  isContinuous: false,
 };
 
 const SERVER_AUDIO_STATE: AudioState = {
@@ -56,6 +58,7 @@ const SERVER_AUDIO_STATE: AudioState = {
   duration: 0,
   currentTime: 0,
   isPlayerVisible: false,
+  isContinuous: false,
 };
 
 const listeners = new Set<() => void>();
@@ -98,25 +101,17 @@ function detachAndStopCurrentAudio() {
   currentAudio = null;
 }
 
-function formatAudioError() {
-  return "Audio failed to load.";
-}
-
 async function resolveTrackSrc(
   item: AudioQueueItem,
   reciterId: string
 ): Promise<string | null> {
-  if (item.src) {
-    return item.src;
-  }
+  if (item.src) return item.src;
 
   const bundledSource = item.audio
     ? pickAudioSource(item.audio, reciterId)
     : null;
 
-  if (bundledSource?.url) {
-    return bundledSource.url;
-  }
+  if (bundledSource?.url) return bundledSource.url;
 
   const fetchedAudio = await fetchAyahAudio(item.surahNo, item.ayahNo);
   const fetchedSource = pickAudioSource(fetchedAudio, reciterId);
@@ -158,7 +153,7 @@ async function playQueueIndex(index: number, reciterId = DEFAULT_RECITER_ID) {
   } catch {
     setAudioState({
       status: "error",
-      error: formatAudioError(),
+      error: "Audio failed to load.",
     });
 
     return;
@@ -215,14 +210,16 @@ async function playQueueIndex(index: number, reciterId = DEFAULT_RECITER_ID) {
   audio.addEventListener("ended", () => {
     if (currentAudio !== audio) return;
 
-    const nextIndex = index + 1;
+    currentAudio = null;
 
-    if (nextIndex < audioState.queue.length) {
+    const nextIndex = index + 1;
+    const shouldContinue =
+      audioState.isContinuous && nextIndex < audioState.queue.length;
+
+    if (shouldContinue) {
       void playQueueIndex(nextIndex, reciterId);
       return;
     }
-
-    currentAudio = null;
 
     setAudioState({
       status: "ended",
@@ -237,7 +234,7 @@ async function playQueueIndex(index: number, reciterId = DEFAULT_RECITER_ID) {
 
     setAudioState({
       status: "error",
-      error: formatAudioError(),
+      error: "Audio failed to load.",
     });
   });
 
@@ -271,7 +268,6 @@ export function useAudio() {
       reciterId?: string;
     }) => {
       const item = queue[startIndex];
-
       if (!item) return;
 
       const isSameActiveTrack =
@@ -283,7 +279,7 @@ export function useAudio() {
           audioState.status === "loading"
         ) {
           currentAudio?.pause();
-          setAudioState({ status: "paused" });
+          setAudioState({ status: "paused", isPlayerVisible: true });
           return;
         }
 
@@ -350,7 +346,6 @@ export function useAudio() {
 
   const next = useCallback(async () => {
     const nextIndex = audioState.currentIndex + 1;
-
     if (nextIndex >= audioState.queue.length) return;
 
     await playQueueIndex(nextIndex);
@@ -364,7 +359,6 @@ export function useAudio() {
     }
 
     const previousIndex = audioState.currentIndex - 1;
-
     if (previousIndex < 0) return;
 
     await playQueueIndex(previousIndex);
@@ -385,6 +379,12 @@ export function useAudio() {
     });
   }, []);
 
+  const toggleContinuous = useCallback(() => {
+    setAudioState({
+      isContinuous: !audioState.isContinuous,
+    });
+  }, []);
+
   const closePlayer = useCallback(() => {
     detachAndStopCurrentAudio();
 
@@ -397,6 +397,7 @@ export function useAudio() {
       duration: 0,
       currentTime: 0,
       isPlayerVisible: false,
+      isContinuous: false,
     });
   }, []);
 
@@ -409,6 +410,7 @@ export function useAudio() {
     next,
     previous,
     seek,
+    toggleContinuous,
     closePlayer,
   };
 }

@@ -34,8 +34,10 @@ export function AyahAudioButton({
       type="button"
       aria-label={isPlaying ? "Pause ayah audio" : "Play ayah audio"}
       onClick={handleClick}
-      className="group flex size-[34px] min-w-[34px] cursor-pointer items-center justify-center rounded-full bg-transparent text-[var(--icon-color)] transition-colors active:scale-90 hover:bg-[var(--primary-7)] hover:text-[var(--pure-color)]"
+      className="ayah-action-tooltip group relative flex size-[34px] min-w-[34px] cursor-pointer items-center justify-center rounded-full bg-transparent text-[var(--icon-color)] transition-colors active:scale-90 hover:bg-[var(--primary-7)] hover:text-[var(--pure-color)]"
     >
+      <span className="ayah-action-tooltip-label">Play</span>
+
       {isLoading ? (
         <SpinnerIcon className="h-[18px] w-[18px] animate-spin" />
       ) : isPlaying ? (
