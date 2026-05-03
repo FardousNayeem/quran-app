@@ -9,6 +9,24 @@ import {
   TRANSLATION_FONTS,
 } from "@/lib/constants";
 
+function normalizeSettings(settings: FontSettings): FontSettings {
+  return {
+    ...settings,
+
+    // Safety migration for old rem-based saved values.
+    // Old values like 2.2 become about 30px.
+    arabicSize:
+      settings.arabicSize < 10
+        ? Math.round(settings.arabicSize * 13.6)
+        : settings.arabicSize,
+
+    translationSize:
+      settings.translationSize < 10
+        ? Math.round(settings.translationSize * 16.7)
+        : settings.translationSize,
+  };
+}
+
 function readStoredSettings(): FontSettings {
   if (typeof window === "undefined") {
     return DEFAULT_FONT_SETTINGS;
@@ -21,10 +39,10 @@ function readStoredSettings(): FontSettings {
       return DEFAULT_FONT_SETTINGS;
     }
 
-    return {
+    return normalizeSettings({
       ...DEFAULT_FONT_SETTINGS,
       ...(JSON.parse(saved) as Partial<FontSettings>),
-    };
+    });
   } catch {
     return DEFAULT_FONT_SETTINGS;
   }
@@ -34,26 +52,46 @@ function applyToDOM(settings: FontSettings) {
   if (typeof document === "undefined") return;
 
   const root = document.documentElement;
-  const arabicFont = ARABIC_FONTS.find((font) => font.id === settings.arabicFont);
+
+  const arabicFont = ARABIC_FONTS.find(
+    (font) => font.id === settings.arabicFont
+  );
+
   const translationFont = TRANSLATION_FONTS.find(
     (font) => font.id === settings.translationFont
   );
 
-  root.style.setProperty("--font-arabic", arabicFont?.cssVar ?? "serif");
-  root.style.setProperty("--font-translation", translationFont?.cssVar ?? "sans-serif");
+  root.style.setProperty(
+    "--font-arabic",
+    arabicFont?.cssVar ?? "var(--font-kfgq)"
+  );
+
+  root.style.setProperty(
+    "--font-translation",
+    translationFont?.cssVar ?? "var(--font-app)"
+  );
+
   root.style.setProperty("--arabic-font-size", `${settings.arabicSize}px`);
-  root.style.setProperty("--translation-font-size", `${settings.translationSize}px`);
+  root.style.setProperty(
+    "--translation-font-size",
+    `${settings.translationSize}px`
+  );
 }
 
 export function useFontSettings() {
-  // Always start with the same value on server and client
-  const [settings, setSettings] = useState<FontSettings>(DEFAULT_FONT_SETTINGS);
+  const [settings, setSettings] =
+    useState<FontSettings>(DEFAULT_FONT_SETTINGS);
+
   const [hasLoadedStoredSettings, setHasLoadedStoredSettings] = useState(false);
 
   useEffect(() => {
-    const stored = readStoredSettings();
-    setSettings(stored);
-    setHasLoadedStoredSettings(true);
+    const frame = window.requestAnimationFrame(() => {
+      const stored = readStoredSettings();
+      setSettings(stored);
+      setHasLoadedStoredSettings(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -62,12 +100,12 @@ export function useFontSettings() {
 
   const update = (partial: Partial<FontSettings>) => {
     setSettings((prev) => {
-      const next = { ...prev, ...partial };
+      const next = normalizeSettings({ ...prev, ...partial });
 
       try {
         window.localStorage.setItem(FONT_SETTINGS_KEY, JSON.stringify(next));
       } catch {
-        // ignore localStorage errors
+        
       }
 
       return next;

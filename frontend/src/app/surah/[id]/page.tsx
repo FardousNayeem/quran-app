@@ -146,19 +146,19 @@ function AyahCard({ surahNo, ayah }: { surahNo: number; ayah: Ayah }) {
             className="mb-4 text-right text-[var(--pure-color)]"
             style={{
               fontFamily:
-                "var(--font-kfgq), var(--font-arabic), Amiri, Scheherazade New, serif",
+                "var(--font-arabic), var(--font-kfgq), Amiri, Scheherazade New, serif",
               fontSize: "var(--arabic-font-size)",
               lineHeight: "var(--arabic-line-height)",
             }}
           >
             {ayah.arabic1}
             <span
-              className="mx-2 inline align-middle leading-none text-[0.74em] text-[var(--pure-color)]"
-              style={{
-                fontFamily: "var(--font-kfgq), var(--font-arabic), serif",
-              }}
-            >
-              {toArabicNumeral(ayah.ayahNo)}
+                className="mx-2 inline align-middle leading-none text-[1.0em] text-[var(--pure-color)]"
+                style={{
+                    fontFamily: "var(--font-kfgq), serif",
+                }}
+                >
+                {toArabicNumeral(ayah.ayahNo)}
             </span>
           </p>
 

@@ -21,29 +21,27 @@ export const RECITERS: Record<string, string> = {
 
 export const DEFAULT_RECITER_ID = "1";
 
+
 // Font Options
 
-export const ARABIC_FONTS: {
-  id: ArabicFont;
-  label: string;
-  cssVar: string;
-}[] = [
-  {
-    id: "uthmanic",
-    label: "Uthmanic (KFGQ)",
-    cssVar: "var(--font-kfgq)",
-  },
-  {
-    id: "amiri",
-    label: "Amiri",
-    cssVar: "var(--font-amiri)",
-  },
-  {
-    id: "scheherazade",
-    label: "Scheherazade",
-    cssVar: "var(--font-scheherazade)",
-  },
-];
+export const ARABIC_FONTS: { id: ArabicFont; label: string; cssVar: string }[] =
+  [
+    {
+      id: "uthmanic",
+      label: "KFGQ",
+      cssVar: "var(--font-kfgq)",
+    },
+    {
+      id: "amiri",
+      label: "Amiri",
+      cssVar: "var(--font-amiri)",
+    },
+    {
+      id: "scheherazade",
+      label: "Scheherazade",
+      cssVar: "var(--font-scheherazade)",
+    },
+  ];
 
 export const TRANSLATION_FONTS: {
   id: TranslationFont;
@@ -68,7 +66,6 @@ export const TRANSLATION_FONTS: {
 ];
 
 // Default Font Settings
-// These values are pixels, matching the target UI sliders.
 
 export const DEFAULT_FONT_SETTINGS: FontSettings = {
   arabicFont: "uthmanic",

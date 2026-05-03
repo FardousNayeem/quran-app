@@ -13,12 +13,13 @@
 /* KFGQPC HAFS Uthmanic */
 @import url("https://fonts.cdnfonts.com/css/kfgqpc-hafs-uthmanic-script?styles=176443");
 
-
 :root {
   --font-kfgq: "KFGQPC HAFS Uthmanic Script", serif;
   --font-calligraphy: "KFGQPC HAFS Uthmanic Script", serif;
+
   --font-amiri: "Amiri", serif;
   --font-scheherazade: "Scheherazade New", serif;
+
   --font-lora: "Lora", serif;
   --font-source-serif: "Source Serif 4", serif;
 }
