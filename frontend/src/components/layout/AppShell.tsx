@@ -1,9 +1,10 @@
 "use client";
 
 import { IconStrip } from "@/components/layout/iconstrip";
+import { TopNav } from "@/components/layout/topnav";
+import { RouteLoadingLine } from "@/components/layout/loadingline";
 import { SurahSidebar } from "@/components/layout/surahbar";
 import { RightPanel } from "@/components/layout/rightpanel";
-import { TopNav } from "@/components/layout/topnav";
 import { useFontSettings } from "@/hooks/useFontSettings";
 import type { SurahMeta } from "@/types/quran.types";
 
@@ -17,6 +18,7 @@ export function AppShell({ surahs, children }: AppShellProps) {
 
   return (
     <div className="min-h-screen bg-[var(--primary-bg)] text-[var(--pure-color)]">
+      <RouteLoadingLine />
       <IconStrip />
       <TopNav />
 

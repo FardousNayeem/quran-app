@@ -47,6 +47,7 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
   const title = displaySurahName(surah.meta.surahName);
   const revelationPlace = displayRevelationPlace(surah.meta.revelationPlace);
   const iconSrc = getRevelationIconSrc(surah.meta.revelationPlace);
+  const showBismillah = HeaderBismillah(surah.meta.surahNo);
 
   return (
     <section
@@ -71,7 +72,7 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
           </div>
         </div>
 
-        <div className="space-y-2 text-center md:col-span-1">
+        <div className="space-y-2 text-center">
           <h1 className="text-[24px] font-semibold leading-tight text-[var(--pure-color)]">
             Surah {title}
           </h1>
@@ -81,7 +82,20 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
           </p>
         </div>
 
-        <div />
+        <div className="hidden justify-end md:flex">
+          {showBismillah && (
+            <div className="relative h-[54px] w-[210px]">
+              <Image
+                src="/icons/bismillah.png"
+                alt="Bismillah"
+                fill
+                priority
+                sizes="210px"
+                className="object-contain"
+              />
+            </div>
+          )}
+        </div>
       </header>
 
       <div>
@@ -202,40 +216,56 @@ function AyahActionButton({
   );
 }
 
-function displayRevelationPlace(place: string): string {
-  const normalized = place.trim().toLowerCase();
+function normalizeRevelationPlace(place: string): string {
+  return place.trim().toLowerCase();
+}
 
-  if (
+function isMakkahPlace(place: string): boolean {
+  const normalized = normalizeRevelationPlace(place);
+
+  return (
     normalized.includes("mecca") ||
     normalized.includes("makkah") ||
+    normalized.includes("makka") ||
+    normalized.includes("makki") ||
     normalized === "meccan"
-  ) {
-    return "Makkah";
+  );
+}
+
+function isMadinahPlace(place: string): boolean {
+  const normalized = normalizeRevelationPlace(place);
+
+  return (
+    normalized.includes("medina") ||
+    normalized.includes("madina") ||
+    normalized.includes("madinah") ||
+    normalized.includes("madani") ||
+    normalized === "medinan"
+  );
+}
+
+function displayRevelationPlace(place: string): string {
+  if (isMadinahPlace(place)) {
+    return "Madinah";
   }
 
-  if (
-    normalized.includes("medina") ||
-    normalized.includes("madinah") ||
-    normalized === "medinan"
-  ) {
-    return "Madinah";
+  if (isMakkahPlace(place)) {
+    return "Makkah";
   }
 
   return place;
 }
 
 function getRevelationIconSrc(place: string): string {
-  const normalized = place.trim().toLowerCase();
-
-  if (
-    normalized.includes("medina") ||
-    normalized.includes("madinah") ||
-    normalized === "medinan"
-  ) {
+  if (isMadinahPlace(place)) {
     return "/icons/madinah.png";
   }
 
   return "/icons/makkah.png";
+}
+
+function HeaderBismillah(surahNo: number): boolean {
+  return surahNo !== 1 && surahNo !== 9;
 }
 
 function PlayIcon({ className }: { className?: string }) {

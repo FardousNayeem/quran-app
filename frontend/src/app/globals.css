@@ -144,3 +144,19 @@ a {
 .ayah-number-mark {
   font-family: var(--font-kfgq), var(--font-arabic), serif;
 }
+
+@keyframes route-loading-line {
+  0% {
+    transform: translateX(-100%) scaleX(0.25);
+  }
+  45% {
+    transform: translateX(-15%) scaleX(0.65);
+  }
+  100% {
+    transform: translateX(0%) scaleX(1);
+  }
+}
+
+.route-loading-line-active {
+  animation: route-loading-line 650ms ease-in-out forwards;
+}

@@ -60,26 +60,13 @@ function AccordionSection({
           </p>
         </div>
 
-        <svg
-          width="14"
-          height="11"
-          viewBox="0 0 15 14"
-          fill="none"
+        <ChevronIcon
           className="shrink-0 transition-all duration-300"
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             color: isOpen ? "var(--primary)" : "var(--subtitle-color)",
           }}
-        >
-          <path
-            d="M11.82 5.22L8.01 9.02C7.57 9.47 6.83 9.47 6.38 9.02L2.58 5.22"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeMiterlimit="10"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        />
       </button>
 
       {isOpen && (
@@ -174,7 +161,7 @@ function RangeSlider({
 export function RightPanel({ settings, onUpdate }: Props) {
   const [readingOpen, setReadingOpen] = useState(false);
   const [fontOpen, setFontOpen] = useState(true);
-  const [fontMenuOpen, setFontMenuOpen] = useState(false);
+  const [fontSelectorOpen, setFontSelectorOpen] = useState(false);
 
   const tabs = ["Translation", "Reading"] as const;
   const activeTab = settings.showTranslation ? "Translation" : "Reading";
@@ -187,6 +174,94 @@ export function RightPanel({ settings, onUpdate }: Props) {
     ARABIC_FONTS.find((font) => font.id === settings.arabicFont) ??
     ARABIC_FONTS[0];
 
+  if (fontSelectorOpen) {
+    return (
+      <aside
+        className="fixed right-0 z-20 flex flex-col overflow-hidden"
+        style={{
+          top: "var(--top-nav-size)",
+          height: "calc(100vh - var(--top-nav-size))",
+          width: "var(--right-sidebar-size)",
+          backgroundColor: "var(--primary-bg)",
+          borderLeft: "1px solid var(--border-color)",
+        }}
+      >
+        <div className="h-full overflow-y-auto px-[26px] pt-6">
+          <button
+            type="button"
+            onClick={() => setFontSelectorOpen(false)}
+            className="mb-7 flex items-center gap-4 text-[17px] font-bold"
+            style={{ color: "var(--primary)" }}
+          >
+            <BackIcon />
+            <span>Select Font Face</span>
+          </button>
+
+          <div
+            className="relative isolate mb-5 flex min-h-10 items-center rounded-full border-4"
+            style={{
+              borderColor: "var(--secondary-bg)",
+              backgroundColor: "var(--secondary-bg)",
+            }}
+          >
+            <button
+              type="button"
+              className="relative z-10 h-full w-full py-2 text-[15px] font-semibold"
+              style={{ color: "var(--pure-color)" }}
+            >
+              Uthmani
+            </button>
+
+            <button
+              type="button"
+              className="relative z-10 h-full w-full py-2 text-[15px]"
+              style={{ color: "var(--subtitle-color-secondary)" }}
+            >
+              Indopak
+            </button>
+
+            <div
+              className="absolute h-full rounded-full"
+              style={{
+                width: "50%",
+                transform: "translateX(0%)",
+                backgroundColor: "var(--primary-bg)",
+              }}
+            />
+          </div>
+
+          <div className="space-y-1">
+            {ARABIC_FONTS.map((font) => {
+              const isSelected = font.id === settings.arabicFont;
+
+              return (
+                <button
+                  key={font.id}
+                  type="button"
+                  onClick={() => {
+                    onUpdate({ arabicFont: font.id });
+                    setFontSelectorOpen(false);
+                  }}
+                  className="flex min-h-[48px] w-full items-center justify-between rounded-sm px-3 text-left text-[15px] transition-colors hover:bg-[var(--primary-7)]"
+                  style={{
+                    color: isSelected ? "var(--primary)" : "var(--pure-color)",
+                    backgroundColor: isSelected
+                      ? "var(--secondary-bg)"
+                      : "transparent",
+                  }}
+                >
+                  <span>{font.label}</span>
+
+                  {isSelected && <CheckIcon />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </aside>
+    );
+  }
+
   const ReadingIconClosed = (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
       <path
@@ -196,27 +271,9 @@ export function RightPanel({ settings, onUpdate }: Props) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M11 5.03V18.78"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7.1 7.78H5.04"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M7.79 10.53H5.04"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M11 5.03V18.78" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7.1 7.78H5.04" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M7.79 10.53H5.04" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 
@@ -243,20 +300,8 @@ export function RightPanel({ settings, onUpdate }: Props) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path
-        d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9.32 12.23V5.95"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.32 12.23V5.95" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 
@@ -266,25 +311,13 @@ export function RightPanel({ settings, onUpdate }: Props) {
         d="M7.07 16.5H11.57C15.32 16.5 16.82 15 16.82 11.25V6.75C16.82 3 15.32 1.5 11.57 1.5H7.07C3.32 1.5 1.82 3 1.82 6.75V11.25C1.82 15 3.32 16.5 7.07 16.5Z"
         fill="currentColor"
       />
-      <path
-        d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9.32 12.23V5.95"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.32 12.23V5.95" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 
   return (
-    <div
+    <aside
       className="fixed right-0 z-20 flex flex-col overflow-hidden"
       style={{
         top: "var(--top-nav-size)",
@@ -308,9 +341,7 @@ export function RightPanel({ settings, onUpdate }: Props) {
                 <button
                   key={tab}
                   type="button"
-                  onClick={() =>
-                    onUpdate({ showTranslation: tab === "Translation" })
-                  }
+                  onClick={() => onUpdate({ showTranslation: tab === "Translation" })}
                   className="z-10 h-full w-full py-2 text-[15px] transition-colors"
                   style={{
                     color:
@@ -343,10 +374,7 @@ export function RightPanel({ settings, onUpdate }: Props) {
               iconOpen={ReadingIconOpen}
               label="Reading Settings"
             >
-              <p
-                className="text-[13px]"
-                style={{ color: "var(--subtitle-color)" }}
-              >
+              <p className="text-[13px]" style={{ color: "var(--subtitle-color)" }}>
                 Reading settings coming soon.
               </p>
             </AccordionSection>
@@ -386,85 +414,24 @@ export function RightPanel({ settings, onUpdate }: Props) {
                   Arabic Font Face
                 </p>
 
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setFontMenuOpen((value) => !value)}
-                    className="flex min-h-[40px] w-full items-center justify-between rounded-sm px-4 py-2.5 text-[15px]"
+                <button
+                  type="button"
+                  onClick={() => setFontSelectorOpen(true)}
+                  className="flex min-h-[40px] w-full items-center justify-between rounded-sm px-4 py-2.5 text-[15px]"
+                  style={{
+                    backgroundColor: "var(--secondary-bg)",
+                    color: "var(--pure-color)",
+                  }}
+                >
+                  {selectedArabicFont.label}
+
+                  <ChevronIcon
                     style={{
-                      backgroundColor: "var(--secondary-bg)",
-                      color: "var(--pure-color)",
+                      transform: "rotate(-90deg)",
+                      color: "var(--icon-color)",
                     }}
-                  >
-                    {selectedArabicFont.label}
-
-                    <svg
-                      width="14"
-                      height="11"
-                      viewBox="0 0 15 14"
-                      fill="none"
-                      className="transition-transform duration-200"
-                      style={{
-                        transform: fontMenuOpen
-                          ? "rotate(90deg)"
-                          : "rotate(-90deg)",
-                        color: "var(--icon-color)",
-                      }}
-                    >
-                      <path
-                        d="M11.82 5.22L8.01 9.02C7.57 9.47 6.83 9.47 6.38 9.02L2.58 5.22"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeMiterlimit="10"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-
-                  {fontMenuOpen && (
-                    <div
-                      className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-sm border"
-                      style={{
-                        backgroundColor: "var(--secondary-bg)",
-                        borderColor: "var(--border-color)",
-                      }}
-                    >
-                      {ARABIC_FONTS.map((font) => {
-                        const isSelected = font.id === settings.arabicFont;
-
-                        return (
-                          <button
-                            key={font.id}
-                            type="button"
-                            onClick={() => {
-                              onUpdate({ arabicFont: font.id });
-                              setFontMenuOpen(false);
-                            }}
-                            className="flex w-full items-center justify-between px-4 py-3 text-left text-[14px] transition-colors hover:bg-[var(--primary-7)]"
-                            style={{
-                              color: isSelected
-                                ? "var(--primary)"
-                                : "var(--pure-color)",
-                              fontWeight: isSelected ? 700 : 400,
-                            }}
-                          >
-                            <span>{font.label}</span>
-
-                            {isSelected && (
-                              <span
-                                className="text-[12px]"
-                                style={{ color: "var(--primary)" }}
-                              >
-                                Selected
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
+                  />
+                </button>
               </div>
             </AccordionSection>
           </div>
@@ -509,6 +476,62 @@ export function RightPanel({ settings, onUpdate }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </aside>
+  );
+}
+
+function ChevronIcon({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <svg
+      width="14"
+      height="11"
+      viewBox="0 0 15 14"
+      fill="none"
+      className={className}
+      style={style}
+    >
+      <path
+        d="M11.82 5.22L8.01 9.02C7.57 9.47 6.83 9.47 6.38 9.02L2.58 5.22"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function BackIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M12.5 15L7.5 10L12.5 5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M16.25 5.625L8.125 13.75L3.75 9.375"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
