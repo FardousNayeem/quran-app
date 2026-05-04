@@ -1,5 +1,5 @@
 import { fetchAllSurahs } from "@/lib/api.client";
-import { AppShell } from "@/components/layout/appshell";
+import { AppShell } from "@/components/layout/AppShell";
 import type { SurahMeta } from "@/types/quran.types";
 
 export default async function SurahLayout({
