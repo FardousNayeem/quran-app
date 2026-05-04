@@ -34,8 +34,23 @@ export function revelationLabel(place: string): string {
 export function displaySurahName(name: string): string {
   const cleaned = name.replace(/-/g, " ").replace(/\s+/g, " ").trim();
 
+  if (/^Al Faatiha$/i.test(cleaned)) {
+    return "Al Fatihah";
+  }
+  if (/^Al Baqara$/i.test(cleaned)) {
+    return "Al Baqarah";
+  }
   if (/^aal i imraan$/i.test(cleaned)) {
     return "Al Imran";
+  }
+  if (/^An Nisaa$/i.test(cleaned)) {
+    return "An Nisa";
+  }
+  if (/^Al Maaida$/i.test(cleaned)) {
+    return "Al Ma'idah";
+  }
+  if (/^Al An'aam$/i.test(cleaned)) {
+    return "An An'am";
   }
 
   return cleaned;
