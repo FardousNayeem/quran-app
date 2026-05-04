@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { FontSettings } from "@/types/quran.types";
 import {
   ARABIC_FONTS,
@@ -13,6 +14,8 @@ import {
 interface Props {
   settings: FontSettings;
   onUpdate: (p: Partial<FontSettings>) => void;
+  open?: boolean;
+  onClose?: () => void;
 }
 
 function AccordionSection({
@@ -25,10 +28,10 @@ function AccordionSection({
 }: {
   isOpen: boolean;
   onToggle: () => void;
-  iconClosed: React.ReactNode;
-  iconOpen: React.ReactNode;
+  iconClosed: ReactNode;
+  iconOpen: ReactNode;
   label: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <div className="overflow-hidden">
@@ -158,7 +161,12 @@ function RangeSlider({
   );
 }
 
-export function RightPanel({ settings, onUpdate }: Props) {
+export function SettingsPanel({
+  settings,
+  onUpdate,
+  open = false,
+  onClose,
+}: Props) {
   const [readingOpen, setReadingOpen] = useState(false);
   const [fontOpen, setFontOpen] = useState(true);
   const [fontSelectorOpen, setFontSelectorOpen] = useState(false);
@@ -174,92 +182,9 @@ export function RightPanel({ settings, onUpdate }: Props) {
     ARABIC_FONTS.find((font) => font.id === settings.arabicFont) ??
     ARABIC_FONTS[0];
 
-  if (fontSelectorOpen) {
-    return (
-      <aside
-        className="fixed right-0 z-20 flex flex-col overflow-hidden"
-        style={{
-          top: "var(--top-nav-size)",
-          height: "calc(100vh - var(--top-nav-size))",
-          width: "var(--right-sidebar-size)",
-          backgroundColor: "var(--primary-bg)",
-          borderLeft: "1px solid var(--border-color)",
-        }}
-      >
-        <div className="h-full overflow-y-auto px-[26px] pt-6">
-          <button
-            type="button"
-            onClick={() => setFontSelectorOpen(false)}
-            className="mb-7 flex items-center gap-4 text-[17px] font-bold"
-            style={{ color: "var(--primary)" }}
-          >
-            <BackIcon />
-            <span>Select Font Face</span>
-          </button>
-
-          <div
-            className="relative isolate mb-5 flex min-h-10 items-center rounded-full border-4"
-            style={{
-              borderColor: "var(--secondary-bg)",
-              backgroundColor: "var(--secondary-bg)",
-            }}
-          >
-            <button
-              type="button"
-              className="relative z-10 h-full w-full py-2 text-[15px] font-semibold"
-              style={{ color: "var(--pure-color)" }}
-            >
-              Uthmani
-            </button>
-
-            <button
-              type="button"
-              className="relative z-10 h-full w-full py-2 text-[15px]"
-              style={{ color: "var(--subtitle-color-secondary)" }}
-            >
-              Indopak
-            </button>
-
-            <div
-              className="absolute h-full rounded-full"
-              style={{
-                width: "50%",
-                transform: "translateX(0%)",
-                backgroundColor: "var(--primary-bg)",
-              }}
-            />
-          </div>
-
-          <div className="space-y-1">
-            {ARABIC_FONTS.map((font) => {
-              const isSelected = font.id === settings.arabicFont;
-
-              return (
-                <button
-                  key={font.id}
-                  type="button"
-                  onClick={() => {
-                    onUpdate({ arabicFont: font.id });
-                    setFontSelectorOpen(false);
-                  }}
-                  className="flex min-h-[48px] w-full items-center justify-between rounded-sm px-3 text-left text-[15px] transition-colors hover:bg-[var(--primary-7)]"
-                  style={{
-                    color: isSelected ? "var(--primary)" : "var(--pure-color)",
-                    backgroundColor: isSelected
-                      ? "var(--secondary-bg)"
-                      : "transparent",
-                  }}
-                >
-                  <span>{font.label}</span>
-
-                  {isSelected && <CheckIcon />}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </aside>
-    );
+  function handleClose() {
+    setFontSelectorOpen(false);
+    onClose?.();
   }
 
   const ReadingIconClosed = (
@@ -271,9 +196,27 @@ export function RightPanel({ settings, onUpdate }: Props) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M11 5.03V18.78" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M7.1 7.78H5.04" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M7.79 10.53H5.04" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M11 5.03V18.78"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.1 7.78H5.04"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.79 10.53H5.04"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 
@@ -300,8 +243,20 @@ export function RightPanel({ settings, onUpdate }: Props) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.32 12.23V5.95" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.32 12.23V5.95"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 
@@ -311,172 +266,313 @@ export function RightPanel({ settings, onUpdate }: Props) {
         d="M7.07 16.5H11.57C15.32 16.5 16.82 15 16.82 11.25V6.75C16.82 3 15.32 1.5 11.57 1.5H7.07C3.32 1.5 1.82 3 1.82 6.75V11.25C1.82 15 3.32 16.5 7.07 16.5Z"
         fill="currentColor"
       />
-      <path d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.32 12.23V5.95" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M5.57 6.67C7.93 5.49 10.71 5.49 13.07 6.67"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.32 12.23V5.95"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 
-  return (
-    <aside
-      className="fixed right-0 z-20 flex flex-col overflow-hidden"
-      style={{
-        top: "var(--top-nav-size)",
-        height: "calc(100vh - var(--top-nav-size))",
-        width: "var(--right-sidebar-size)",
-        backgroundColor: "var(--primary-bg)",
-        borderLeft: "1px solid var(--border-color)",
-      }}
-    >
-      <div className="relative flex h-full w-full flex-col overflow-y-auto">
-        <div className="flex w-full flex-col overflow-hidden pt-6">
-          <div className="mb-4 px-[26px]">
+  if (fontSelectorOpen) {
+    return (
+      <>
+        <div
+          className={`settings-panel-backdrop ${
+            open ? "settings-panel-backdrop-open" : ""
+          }`}
+          onClick={handleClose}
+          aria-hidden="true"
+        />
+
+        <aside
+          className={`settings-panel ${open ? "settings-panel-open" : ""}`}
+        >
+          <div className="h-full overflow-y-auto px-[26px] pt-6">
+            <div className="mb-7 flex items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setFontSelectorOpen(false)}
+                className="flex items-center gap-4 text-[17px] font-bold"
+                style={{ color: "var(--primary)" }}
+              >
+                <BackIcon />
+                <span>Select Font Face</span>
+              </button>
+
+              <button
+                type="button"
+                aria-label="Close settings"
+                onClick={handleClose}
+                className="ml-auto hidden size-9 items-center justify-center rounded-full text-[var(--icon-color)] hover:bg-[var(--primary-7)] hover:text-[var(--pure-color)] max-xl:flex"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
             <div
-              className="relative isolate flex min-h-10 items-center rounded-full border-4"
+              className="relative isolate mb-5 flex min-h-10 items-center rounded-full border-4"
               style={{
                 borderColor: "var(--secondary-bg)",
                 backgroundColor: "var(--secondary-bg)",
               }}
             >
-              {tabs.map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => onUpdate({ showTranslation: tab === "Translation" })}
-                  className="z-10 h-full w-full py-2 text-[15px] transition-colors"
-                  style={{
-                    color:
-                      activeTab === tab
-                        ? "var(--pure-color)"
-                        : "var(--subtitle-color-secondary)",
-                    fontWeight: activeTab === tab ? 600 : 400,
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
+              <button
+                type="button"
+                className="relative z-10 h-full w-full py-2 text-[15px] font-semibold"
+                style={{ color: "var(--pure-color)" }}
+              >
+                Uthmani
+              </button>
+
+              <button
+                type="button"
+                className="relative z-10 h-full w-full py-2 text-[15px]"
+                style={{ color: "var(--subtitle-color-secondary)" }}
+              >
+                Indopak
+              </button>
 
               <div
-                className="absolute h-full rounded-full transition-transform duration-300 ease-in-out"
+                className="absolute h-full rounded-full"
                 style={{
                   width: "50%",
-                  transform: `translateX(${activeIdx * 100}%)`,
+                  transform: "translateX(0%)",
                   backgroundColor: "var(--primary-bg)",
                 }}
               />
             </div>
-          </div>
 
-          <div className="space-y-1">
-            <AccordionSection
-              isOpen={readingOpen}
-              onToggle={() => setReadingOpen((value) => !value)}
-              iconClosed={ReadingIconClosed}
-              iconOpen={ReadingIconOpen}
-              label="Reading Settings"
-            >
-              <p className="text-[13px]" style={{ color: "var(--subtitle-color)" }}>
-                Reading settings coming soon.
-              </p>
-            </AccordionSection>
+            <div className="space-y-1">
+              {ARABIC_FONTS.map((font) => {
+                const isSelected = font.id === settings.arabicFont;
 
-            <AccordionSection
-              isOpen={fontOpen}
-              onToggle={() => setFontOpen((value) => !value)}
-              iconClosed={FontIconClosed}
-              iconOpen={FontIconOpen}
-              label="Font Settings"
-            >
-              <RangeSlider
-                label="Arabic Font Size"
-                value={settings.arabicSize}
-                min={ARABIC_SIZE_MIN}
-                max={ARABIC_SIZE_MAX}
-                step={0.1}
-                display={arabicDisplay}
-                onChange={(value) => onUpdate({ arabicSize: value })}
-              />
-
-              <RangeSlider
-                label="Translation Font Size"
-                value={settings.translationSize}
-                min={TRANSLATION_SIZE_MIN}
-                max={TRANSLATION_SIZE_MAX}
-                step={0.02}
-                display={translationDisplay}
-                onChange={(value) => onUpdate({ translationSize: value })}
-              />
-
-              <div className="space-y-2">
-                <p
-                  className="text-[15px] font-medium"
-                  style={{ color: "var(--pure-color)" }}
-                >
-                  Arabic Font Face
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => setFontSelectorOpen(true)}
-                  className="flex min-h-[40px] w-full items-center justify-between rounded-sm px-4 py-2.5 text-[15px]"
-                  style={{
-                    backgroundColor: "var(--secondary-bg)",
-                    color: "var(--pure-color)",
-                  }}
-                >
-                  {selectedArabicFont.label}
-
-                  <ChevronIcon
-                    style={{
-                      transform: "rotate(-90deg)",
-                      color: "var(--icon-color)",
+                return (
+                  <button
+                    key={font.id}
+                    type="button"
+                    onClick={() => {
+                      onUpdate({ arabicFont: font.id });
+                      setFontSelectorOpen(false);
                     }}
-                  />
-                </button>
-              </div>
-            </AccordionSection>
+                    className="flex min-h-[48px] w-full items-center justify-between rounded-sm px-3 text-left text-[15px] transition-colors hover:bg-[var(--primary-7)]"
+                    style={{
+                      color: isSelected
+                        ? "var(--primary)"
+                        : "var(--pure-color)",
+                      backgroundColor: isSelected
+                        ? "var(--secondary-bg)"
+                        : "transparent",
+                    }}
+                  >
+                    <span>{font.label}</span>
+                    {isSelected && <CheckIcon />}
+                  </button>
+                );
+              })}
+            </div>
           </div>
+        </aside>
+      </>
+    );
+  }
 
-          <div className="mt-4 px-[26px]">
-            <div
-              className="relative isolate space-y-2 overflow-hidden rounded-md border px-3 pb-3 pt-3.5"
-              style={{
-                borderColor: "var(--primary-7)",
-                backgroundColor: "var(--primary-10)",
-              }}
-            >
-              <p
-                className="text-[16px] font-bold"
-                style={{ color: "var(--pure-color)" }}
+  return (
+    <>
+      <div
+        className={`settings-panel-backdrop ${
+          open ? "settings-panel-backdrop-open" : ""
+        }`}
+        onClick={handleClose}
+        aria-hidden="true"
+      />
+
+      <aside className={`settings-panel ${open ? "settings-panel-open" : ""}`}>
+        <div className="relative flex h-full w-full flex-col overflow-y-auto">
+          <div className="flex w-full flex-col overflow-hidden">
+            <div className="hidden items-center justify-between px-[26px] pb-5 pt-6 max-xl:flex">
+              <div className="flex items-center gap-3">
+                <span className="text-[var(--primary)]">
+                  <SettingsTitleIcon />
+                </span>
+                <p className="text-xl font-bold text-[var(--pure-color)]">
+                  Settings
+                </p>
+              </div>
+
+              <button
+                type="button"
+                aria-label="Close settings"
+                onClick={handleClose}
+                className="flex size-9 items-center justify-center rounded-full text-[var(--icon-color)] hover:bg-[var(--primary-7)] hover:text-[var(--pure-color)]"
               >
-                Help spread the knowledge of Islam
-              </p>
+                <CloseIcon />
+              </button>
+            </div>
 
-              <p
-                className="text-[13px]"
-                style={{ color: "var(--subtitle-color-secondary)" }}
-              >
-                Your regular support helps us reach our religious brothers and
-                sisters with the message of Islam. Join our mission and be part
-                of the big change.
-              </p>
-
-              <a
-                href="https://irdfoundation.com/sadaqa-jaria"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 flex h-10 w-full items-center justify-center rounded-sm text-[14px] font-semibold"
+            <div className="mb-4 px-[26px] pt-6 max-xl:pt-0">
+              <div
+                className="relative isolate flex min-h-10 items-center rounded-full border-4"
                 style={{
-                  backgroundColor: "var(--primary)",
-                  color: "var(--primary-fg)",
+                  borderColor: "var(--secondary-bg)",
+                  backgroundColor: "var(--secondary-bg)",
                 }}
               >
-                Support Us
-              </a>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() =>
+                      onUpdate({ showTranslation: tab === "Translation" })
+                    }
+                    className="z-10 h-full w-full py-2 text-[15px] transition-colors"
+                    style={{
+                      color:
+                        activeTab === tab
+                          ? "var(--pure-color)"
+                          : "var(--subtitle-color-secondary)",
+                      fontWeight: activeTab === tab ? 600 : 400,
+                    }}
+                  >
+                    {tab}
+                  </button>
+                ))}
+
+                <div
+                  className="absolute h-full rounded-full transition-transform duration-300 ease-in-out"
+                  style={{
+                    width: "50%",
+                    transform: `translateX(${activeIdx * 100}%)`,
+                    backgroundColor: "var(--primary-bg)",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <AccordionSection
+                isOpen={readingOpen}
+                onToggle={() => setReadingOpen((value) => !value)}
+                iconClosed={ReadingIconClosed}
+                iconOpen={ReadingIconOpen}
+                label="Reading Settings"
+              >
+                <p
+                  className="text-[13px]"
+                  style={{ color: "var(--subtitle-color)" }}
+                >
+                  Reading settings coming soon.
+                </p>
+              </AccordionSection>
+
+              <AccordionSection
+                isOpen={fontOpen}
+                onToggle={() => setFontOpen((value) => !value)}
+                iconClosed={FontIconClosed}
+                iconOpen={FontIconOpen}
+                label="Font Settings"
+              >
+                <RangeSlider
+                  label="Arabic Font Size"
+                  value={settings.arabicSize}
+                  min={ARABIC_SIZE_MIN}
+                  max={ARABIC_SIZE_MAX}
+                  step={0.1}
+                  display={arabicDisplay}
+                  onChange={(value) => onUpdate({ arabicSize: value })}
+                />
+
+                <RangeSlider
+                  label="Translation Font Size"
+                  value={settings.translationSize}
+                  min={TRANSLATION_SIZE_MIN}
+                  max={TRANSLATION_SIZE_MAX}
+                  step={0.02}
+                  display={translationDisplay}
+                  onChange={(value) => onUpdate({ translationSize: value })}
+                />
+
+                <div className="space-y-2">
+                  <p
+                    className="text-[15px] font-medium"
+                    style={{ color: "var(--pure-color)" }}
+                  >
+                    Arabic Font Face
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setFontSelectorOpen(true)}
+                    className="flex min-h-[40px] w-full items-center justify-between rounded-sm px-4 py-2.5 text-[15px]"
+                    style={{
+                      backgroundColor: "var(--secondary-bg)",
+                      color: "var(--pure-color)",
+                    }}
+                  >
+                    {selectedArabicFont.label}
+
+                    <ChevronIcon
+                      style={{
+                        transform: "rotate(-90deg)",
+                        color: "var(--icon-color)",
+                      }}
+                    />
+                  </button>
+                </div>
+              </AccordionSection>
+            </div>
+
+            <div className="mt-4 px-[26px] pb-6">
+              <div
+                className="relative isolate space-y-2 overflow-hidden rounded-md border px-3 pb-3 pt-3.5"
+                style={{
+                  borderColor: "var(--primary-7)",
+                  backgroundColor: "var(--primary-10)",
+                }}
+              >
+                <p
+                  className="text-[16px] font-bold"
+                  style={{ color: "var(--pure-color)" }}
+                >
+                  Help spread the knowledge of Islam
+                </p>
+
+                <p
+                  className="text-[13px]"
+                  style={{ color: "var(--subtitle-color-secondary)" }}
+                >
+                  Your regular support helps us reach our religious brothers and
+                  sisters with the message of Islam. Join our mission and be
+                  part of the big change.
+                </p>
+
+                <a
+                  href="https://irdfoundation.com/sadaqa-jaria"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 flex h-10 w-full items-center justify-center rounded-sm text-[14px] font-semibold"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    color: "var(--primary-fg)",
+                  }}
+                >
+                  Support Us
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
 
@@ -485,7 +581,7 @@ function ChevronIcon({
   style,
 }: {
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }) {
   return (
     <svg
@@ -531,6 +627,35 @@ function CheckIcon() {
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M18 6L6 18M6 6l12 12"
+        stroke="currentColor"
+        strokeWidth="1.9"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function SettingsTitleIcon() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z"
+        fill="currentColor"
+      />
+      <path
+        d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.11-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.6-.22l-2.49 1a7.34 7.34 0 0 0-1.7-.98L14.5 2.42A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.5.42L9.13 5.07c-.61.24-1.18.57-1.7.98l-2.49-1a.5.5 0 0 0-.6.22l-2 3.46a.5.5 0 0 0 .12.64l2.11 1.65c-.04.32-.07.65-.07.98s.02.66.07.98l-2.11 1.65a.5.5 0 0 0-.12.64l2 3.46c.13.22.39.31.6.22l2.49-1c.52.41 1.09.74 1.7.98l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.61-.24 1.18-.57 1.7-.98l2.49 1c.22.09.48 0 .6-.22l2-3.46a.5.5 0 0 0-.12-.64l-2.11-1.65Z"
+        fill="currentColor"
+        opacity="0.35"
       />
     </svg>
   );

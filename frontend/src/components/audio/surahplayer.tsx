@@ -61,6 +61,18 @@ export function SurahAudioPlayer() {
               {formatTime(currentTime)}
             </span>
 
+            <PlayerButton
+              label={
+                isContinuous
+                  ? "Disable continuous playback"
+                  : "Enable continuous playback"
+              }
+              onClick={toggleContinuous}
+              active={isContinuous}
+            >
+              <RepeatIcon />
+            </PlayerButton>
+
             <PlayerButton label="Previous ayah" onClick={() => void previous()}>
               <PreviousIcon />
             </PlayerButton>
@@ -84,27 +96,6 @@ export function SurahAudioPlayer() {
               <NextIcon />
             </PlayerButton>
 
-            <button
-              type="button"
-              aria-label={
-                isContinuous
-                  ? "Disable continuous playback"
-                  : "Enable continuous playback"
-              }
-              onClick={toggleContinuous}
-              className="rounded-full px-3 py-1 text-[12px] font-semibold transition-colors"
-              style={{
-                backgroundColor: isContinuous
-                  ? "var(--primary)"
-                  : "var(--primary-7)",
-                color: isContinuous
-                  ? "var(--primary-fg)"
-                  : "var(--subtitle-color)",
-              }}
-            >
-              Auto
-            </button>
-
             <PlayerButton label="Close audio player" onClick={closePlayer}>
               <CloseIcon />
             </PlayerButton>
@@ -123,17 +114,22 @@ function PlayerButton({
   label,
   onClick,
   children,
+  active = false,
 }: {
   label: string;
   onClick: () => void;
   children: React.ReactNode;
+  active?: boolean;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="text-[var(--icon-color)] transition-colors hover:text-[var(--pure-color)]"
+      className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--primary-7)]"
+      style={{
+        color: active ? "var(--primary)" : "var(--icon-color)",
+      }}
     >
       {children}
     </button>
@@ -176,6 +172,41 @@ function PauseIcon() {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function RepeatIcon() {
+  return (
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M17 2.75L20.25 6L17 9.25"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.75 11V9.5C3.75 7.57 5.32 6 7.25 6H20"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7 21.25L3.75 18L7 14.75"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20.25 13V14.5C20.25 16.43 18.68 18 16.75 18H4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

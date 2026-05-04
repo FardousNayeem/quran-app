@@ -16,7 +16,15 @@ const iconButtonClassName =
 
 function Tooltip({ label }: { label: string }) {
   return (
-    <span className="pointer-events-none absolute left-full top-1/2 z-[999] ml-3 hidden -translate-y-1/2 whitespace-nowrap rounded-md bg-gray-200 px-3 py-1.5 text-xs font-medium text-black opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 lg:block">
+    <span
+      className={[
+        "pointer-events-none absolute z-[999] whitespace-nowrap rounded-md bg-gray-200 px-3 py-1.5 text-xs font-medium text-black opacity-0 shadow-md transition-all duration-200",
+        "lg:left-full lg:top-1/2 lg:ml-3 lg:-translate-y-1/2 lg:translate-x-[-4px]",
+        "lg:group-hover:translate-x-0 lg:group-hover:opacity-100 lg:group-focus-visible:translate-x-0 lg:group-focus-visible:opacity-100",
+        "max-lg:bottom-full max-lg:left-1/2 max-lg:mb-2 max-lg:-translate-x-1/2 max-lg:translate-y-1",
+        "max-lg:group-hover:translate-y-0 max-lg:group-hover:opacity-100 max-lg:group-focus-visible:translate-y-0 max-lg:group-focus-visible:opacity-100",
+      ].join(" ")}
+    >
       {label}
     </span>
   );
@@ -106,22 +114,28 @@ export function IconStrip({
       </div>
 
       {/* Mobile/bottom strip fallback. We will polish mobile later. */}
-      <div className="flex h-full w-full items-center justify-center gap-6 lg:hidden">
-        <IconLink href="/surah/1" label="Read Quran">
-          <ReadQuranIcon aria-hidden="true" />
-        </IconLink>
+      <div className="flex h-full w-full items-center justify-center lg:hidden">
+        <div className="flex w-full max-w-[430px] items-center justify-around px-3">
+          <IconLink href="https://quranmazid.com/" label="Home">
+            <HomeIcon aria-hidden="true" />
+          </IconLink>
 
-        <IconButton label="Go to Ayah" onClick={onGoToAyahClick}>
-          <GoToAyahIcon aria-hidden="true" />
-        </IconButton>
+          <IconLink href="/surah/1" label="Read Quran">
+            <ReadQuranIcon aria-hidden="true" />
+          </IconLink>
 
-        <IconButton label="Bookmark" ariaLabel="Bookmarks" onClick={onBookmarksClick}>
-          <BookmarkIcon aria-hidden="true" />
-        </IconButton>
+          <IconButton label="Go to Ayah" onClick={onGoToAyahClick}>
+            <GoToAyahIcon aria-hidden="true" />
+          </IconButton>
 
-        <IconButton label="Others" ariaLabel="More options" onClick={onOthersClick}>
-          <OthersIcon aria-hidden="true" />
-        </IconButton>
+          <IconButton label="Bookmark" ariaLabel="Bookmarks" onClick={onBookmarksClick}>
+            <BookmarkIcon aria-hidden="true" />
+          </IconButton>
+
+          <IconButton label="Others" ariaLabel="More options" onClick={onOthersClick}>
+            <OthersIcon aria-hidden="true" />
+          </IconButton>
+        </div>
       </div>
     </nav>
   );

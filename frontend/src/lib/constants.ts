@@ -76,7 +76,7 @@ export const DEFAULT_FONT_SETTINGS: FontSettings = {
   showArabic2: false,
 };
 
-// Size bounds are pixels, matching the target inspected slider ranges.
+// Font Sizes in Pixels, equavalent to slider range.
 
 export const ARABIC_SIZE_MIN = 18;
 export const ARABIC_SIZE_MAX = 100;

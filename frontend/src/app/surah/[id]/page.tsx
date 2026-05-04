@@ -36,14 +36,14 @@ export async function generateMetadata({
 
   if (!meta) {
     return {
-      title: `Surah ${surahNo} | Quran Mazid`,
+      title: `Surah ${surahNo} - Arabic, English Translation & Recitation`,
     };
   }
 
   const title = displaySurahName(meta.surahName);
 
   return {
-    title: `Surah ${title} | Quran Mazid`,
+    title: `Surah ${title} - Arabic, English Translation & Recitation`,
     description: `Read Surah ${title} with Arabic text, English translation, and recitation.`,
   };
 }
@@ -124,6 +124,21 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
           <p className="text-base capitalize text-[var(--subtitle-color)]">
             Ayah-{surah.meta.totalAyah}, {revelationPlace}
           </p>
+
+          {showBismillah && (
+            <div className="mx-auto mt-5 flex justify-center md:hidden">
+              <div className="relative h-[54px] w-[210px]">
+                <Image
+                  src="/icons/bismillah.png"
+                  alt="Bismillah"
+                  fill
+                  priority
+                  sizes="210px"
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="hidden justify-end md:flex">
@@ -141,7 +156,6 @@ function SurahReader({ surah }: { surah: SurahResponse }) {
           )}
         </div>
       </header>
-
       <div>
         {surah.ayahs.map((ayah, index) => (
           <AyahCard
@@ -183,13 +197,16 @@ function AyahCard({
         </p>
 
         <div className="md:hidden">
-          <button
-            type="button"
-            aria-label="More ayah actions"
-            className="flex size-[34px] min-w-[34px] items-center justify-center rounded-full text-[var(--icon-color)] hover:bg-[var(--primary-7)]"
-          >
-            <MoreIcon className="h-5 w-5" />
-          </button>
+          <AyahMoreMenu
+            variant="sheet"
+            surahNo={surahNo}
+            ayahNo={ayah.ayahNo}
+            surahName={surahName}
+            arabic={ayah.arabic1}
+            english={ayah.english}
+            queue={audioQueue}
+            audioIndex={audioIndex}
+          />
         </div>
       </div>
 
@@ -396,28 +413,6 @@ function BookmarkIcon({ className }: { className?: string }) {
         d="M1.64453 5.02588H14.3556"
         stroke="currentColor"
         strokeWidth="1.38569"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function MoreIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M5 12a1 1 0 1 0 2 0a1 1 0 1 0-2 0m5 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0m5 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0"
-        stroke="currentColor"
-        strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

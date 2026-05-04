@@ -13,8 +13,6 @@ function normalizeSettings(settings: FontSettings): FontSettings {
   return {
     ...settings,
 
-    // Safety migration for old rem-based saved values.
-    // Old values like 2.2 become about 30px.
     arabicSize:
       settings.arabicSize < 10
         ? Math.round(settings.arabicSize * 13.6)

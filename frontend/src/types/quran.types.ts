@@ -1,4 +1,4 @@
-// ─── Audio ───────────────────────────────────────────────────────────────────
+// Audio
 
 export interface AudioSource {
   reciter: string;
@@ -8,7 +8,7 @@ export interface AudioSource {
 
 export type ReciterMap = Record<string, AudioSource>;
 
-// ─── Surah Metadata (used in sidebar list) ───────────────────────────────────
+// Surah Metadata
 
 export interface SurahMeta {
   surahNo: number;
@@ -20,7 +20,7 @@ export interface SurahMeta {
   totalAyah: number;
 }
 
-// ─── Single Ayah (inside SurahResponse) ─────────────────────────────────────
+// Single Ayah (in SurahResponse)
 
 export interface Ayah {
   ayahNo: number;
@@ -32,7 +32,7 @@ export interface Ayah {
   audio?: ReciterMap;
 }
 
-// ─── Full Surah Response (GET /surah/:id) ────────────────────────────────────
+// Full Surah Response (GET /surah/:id)
 
 export interface SurahResponse {
   meta: SurahMeta;
@@ -40,7 +40,7 @@ export interface SurahResponse {
   ayahs: Ayah[];
 }
 
-// ─── Search ──────────────────────────────────────────────────────────────────
+// Search
 
 export interface SearchResult {
   surahNo: number;
@@ -57,16 +57,16 @@ export interface SearchResponse {
   results: SearchResult[];
 }
 
-// ─── Font Settings (localStorage) ───────────────────────────────────────────
+// Font Settings (localStorage)
 
 export type ArabicFont = "uthmanic" | "amiri" | "scheherazade";
 export type TranslationFont = "geist" | "lora" | "sourceSerif";
 
 export interface FontSettings {
   arabicFont: ArabicFont;
-  arabicSize: number;       // 1.5–3.5 rem
+  arabicSize: number;
   translationFont: TranslationFont;
-  translationSize: number;  // 0.875–1.25 rem
+  translationSize: number; 
   showTranslation: boolean;
   showArabic2: boolean;     // Uthmani script variant
 }

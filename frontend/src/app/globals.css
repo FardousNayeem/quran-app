@@ -38,8 +38,10 @@
   --top-nav-size: 60px;
   --_top-nav-size: var(--top-nav-size);
 
+  --bottom-nav-size: 60px;
+
   --left-sidebar-size: 340px;
-  --right-sidebar-size: 340px;
+  --right-sidebar-size: 320px;
 
   --bottom-bar-size: 0px;
   --fs: 100vh;
@@ -53,6 +55,154 @@
   --font-arabic: "Amiri", serif;
   --font-calligraphy: "Amiri", serif;
   --font-translation: var(--font-app);
+
+  /* Viewpoints */
+  --desktop-breakpoint: 1280px;
+  --tablet-breakpoint: 1024px;
+}
+
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: var(--bottom-nav-size);
+  }
+}
+
+/* Responsive layout shell */
+
+.top-nav {
+  left: var(--side-nav-size);
+  height: var(--top-nav-size);
+}
+
+.app-main {
+  margin-left: calc(var(--side-nav-size) + var(--left-sidebar-size));
+  margin-right: var(--right-sidebar-size);
+  padding-top: var(--top-nav-size);
+}
+
+@media (max-width: 1279px) {
+  .app-main {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 1023px) {
+  .top-nav {
+    left: 0;
+  }
+
+  .app-main {
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: var(--top-nav-size);
+    padding-bottom: var(--bottom-nav-size);
+  }
+}
+
+/* Settings panel:
+   Desktop: fixed right column.
+   Tablet/mobile: hidden off-canvas, opens from right via top-nav gear.
+*/
+
+.settings-panel {
+  position: fixed;
+  right: 0;
+  top: var(--top-nav-size);
+  z-index: 20;
+  display: flex;
+  height: calc(100vh - var(--top-nav-size));
+  width: var(--right-sidebar-size);
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--border-color);
+  background: var(--primary-bg);
+}
+
+.settings-panel-backdrop {
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .settings-panel {
+    top: 0;
+    z-index: 75;
+    height: 100vh;
+    width: min(420px, calc(100vw - 44px));
+    transform: translateX(100%);
+    border-left: 1px solid var(--border-color);
+    transition: transform 300ms ease;
+  }
+
+  .settings-panel-open {
+    transform: translateX(0);
+  }
+
+  .settings-panel-backdrop {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 74;
+    display: block;
+    background: rgba(0, 0, 0, 0);
+    opacity: 0;
+    transition:
+      opacity 220ms ease,
+      background 220ms ease;
+  }
+
+  .settings-panel-backdrop-open {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.62);
+    opacity: 1;
+  }
+}
+
+/* Surah drawer:
+   Used for tablet-narrow/mobile. The fixed sidebar still exists at lg+.
+*/
+
+.surah-sidebar-drawer {
+  pointer-events: none;
+  position: fixed;
+  inset-block: 0;
+  left: 0;
+  z-index: 76;
+  width: min(420px, calc(100vw - 44px));
+  overflow: hidden;
+  border-right: 1px solid var(--border-color);
+  background: var(--primary-bg);
+  transform: translateX(-100%);
+  transition: transform 300ms ease;
+}
+
+.surah-sidebar-drawer-open {
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.surah-drawer-backdrop {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 75;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition:
+    opacity 220ms ease,
+    background 220ms ease;
+}
+
+.surah-drawer-backdrop-open {
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.62);
+  opacity: 1;
+}
+
+@media (min-width: 1024px) {
+  .surah-sidebar-drawer,
+  .surah-drawer-backdrop {
+    display: none;
+  }
 }
 
 *,

@@ -72,7 +72,7 @@ export async function fetchSurahAudio(surahNo: number): Promise<ReciterMap> {
   return apiFetch<ReciterMap>(`/audio/${surahNo}`);
 }
 
-// ─── Search ──────────────────────────────────────────────────────────────────
+// Search
 
 /** GET /search?q=<query> */
 export async function fetchSearch(
