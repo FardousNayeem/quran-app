@@ -7,6 +7,7 @@ import { getSearchIndex } from "@/services/search.service";
 import { PORT } from "@/config/constants";
 import { rateLimiter } from "hono-rate-limiter";
 
+
 const app = new Hono();
 
 // Global middleware
@@ -18,11 +19,7 @@ app.use(
   rateLimiter({
     windowMs: 60 * 1000,
     limit: 100,
-    keyGenerator: (c) =>
-      c.req.header("x-forwarded-for") ??
-      c.req.header("cf-connecting-ip") ??
-      c.req.header("x-real-ip") ??
-      "unknown",
+    keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "unknown",
   })
 );
 
@@ -30,23 +27,12 @@ app.get("/", (c) =>
   c.json({
     name: "Quran App Backend",
     status: "ok",
-    endpoints: [
-      "/health",
-      "/surah",
-      "/surah/:id",
-      "/surah/:id/ayah/:no",
-      "/search?q=...",
-      "/audio/:surahNo/:ayahNo",
-      "/audio/:surahNo",
-    ],
+    endpoints: ["/health", "/surah", "/surah/:id", "/search?q=...", "/audio/:surahNo/:ayahNo"],
   })
 );
 
 app.get("/health", (c) =>
-  c.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-  })
+  c.json({ status: "ok", timestamp: new Date().toISOString() })
 );
 
 registerRoutes(app);
@@ -58,7 +44,7 @@ getSearchIndex().catch((err) =>
   console.error("[Startup] Search index warm-up failed:", err)
 );
 
-console.log(`[Startup] Quran backend listening on port ${PORT}`);
+console.log(`Backend running at http://localhost:${PORT}`);
 
 export default {
   port: PORT,

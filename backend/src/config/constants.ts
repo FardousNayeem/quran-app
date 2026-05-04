@@ -5,31 +5,15 @@ function numberFromEnv(value: string | undefined, fallback: number): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function normalizeUrl(value: string): string {
-  return value.trim().replace(/\/$/, "");
-}
-
-export const QURAN_API_BASE = normalizeUrl(
-  env.QURAN_API_BASE ?? "https://quranapi.pages.dev/api"
-);
+export const QURAN_API_BASE =
+  env.QURAN_API_BASE?.replace(/\/$/, "") ?? "https://quranapi.pages.dev/api";
 
 export const PORT = numberFromEnv(env.PORT, 3001);
 
-/**
-  Local:
-  CORS_ORIGIN=http://localhost:3000
- 
-  Hosting:
-  CORS_ORIGIN=https://your-app.vercel.app,https://your-custom-domain.com
- */
-
-export const CORS_ORIGIN =
-  env.CORS_ORIGIN ??
-  env.FRONTEND_URL ??
-  "http://localhost:3000";
+export const CORS_ORIGIN = env.CORS_ORIGIN ?? "http://localhost:3000";
 
 export const CORS_ORIGINS = CORS_ORIGIN.split(",")
-  .map(normalizeUrl)
+  .map((origin) => origin.trim())
   .filter(Boolean);
 
 export const RECITERS: Record<string, string> = {
