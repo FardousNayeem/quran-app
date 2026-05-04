@@ -25,6 +25,7 @@ async function apiFetch<T>(path: string): Promise<T> {
   try {
     res = await fetch(url, {
       headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8000),
     });
   } catch {
     throw new UpstreamApiError("Unable to reach Quran API.", 502);

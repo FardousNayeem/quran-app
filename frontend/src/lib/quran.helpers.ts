@@ -10,12 +10,12 @@ export function pickAudioSource(
 
 // Surah 9 (At-Tawbah) does not begin with Bismillah
 export function hasBismillah(surahNo: number): boolean {
-  return surahNo !== 9;
+  return surahNo !== 1 && surahNo !== 9;
 }
 
 // Pad surah number for display: 1 → "001"
 export function padSurahNo(n: number): string {
-  return String(n).padStart(1, "0");
+  return String(n).padStart(3, "0");
 }
 
 // Format ayah number with Arabic-Indic numerals for display

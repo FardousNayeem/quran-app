@@ -5,12 +5,23 @@ import { notFound, onError } from "@/middleware/error.middleware";
 import { registerRoutes } from "@/routes/index";
 import { getSearchIndex } from "@/services/search.service";
 import { PORT } from "@/config/constants";
+import { rateLimiter } from "hono-rate-limiter";
+
 
 const app = new Hono();
 
 // Global middleware
 app.use("*", logger());
 app.use("*", corsMiddleware);
+
+app.use(
+  "*",
+  rateLimiter({
+    windowMs: 60 * 1000,
+    limit: 100,
+    keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "unknown",
+  })
+);
 
 app.get("/", (c) =>
   c.json({

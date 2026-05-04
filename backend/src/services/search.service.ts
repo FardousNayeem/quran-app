@@ -95,13 +95,22 @@ async function buildIndex(): Promise<IndexEntry[]> {
   return index;
 }
 
+
+let buildingPromise: Promise<IndexEntry[]> | null = null;
+
 export async function getSearchIndex(): Promise<IndexEntry[]> {
   const cached = cache.get<IndexEntry[]>(INDEX_CACHE_KEY);
   if (cached) return cached;
 
-  const index = await buildIndex();
-  cache.set(INDEX_CACHE_KEY, index, CACHE_TTL.SEARCH_INDEX);
-  return index;
+  if (!buildingPromise) {
+    buildingPromise = buildIndex().then((index) => {
+      cache.set(INDEX_CACHE_KEY, index, CACHE_TTL.SEARCH_INDEX);
+      buildingPromise = null;
+      return index;
+    });
+  }
+
+  return buildingPromise;
 }
 
 export async function searchAyahs(query: string): Promise<SearchResult[]> {
