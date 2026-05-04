@@ -13,7 +13,7 @@ import { AyahMoreMenu } from "@/components/reader/moremenu";
 import { AyahCardShell } from "@/components/reader/ayahcardshell";
 
 export const dynamicParams = false;
-export const revalidate = 60 * 60 * 12;
+export const revalidate = 43200;
 
 interface PageProps {
   params: Promise<{ id: string }>;
