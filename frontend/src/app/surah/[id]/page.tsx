@@ -15,6 +15,7 @@ import { AyahCardShell } from "@/components/reader/ayahcardshell";
 export const dynamicParams = false;
 export const revalidate = 43200;
 
+/* Lets page know which id is in the URL. */
 interface PageProps {
   params: Promise<{ id: string }>;
 }
